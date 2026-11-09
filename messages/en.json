@@ -1,0 +1,32 @@
+{
+  "brand": {
+    "name": "WorkLanka",
+    "tagline": "Career & Recruitment Platform"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Create Account",
+    "logout": "Sign Out",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "companyName": "Company Name",
+    "verifyEmail": "Verify Your Email",
+    "enterCode": "Enter the 6-digit verification code sent to your email",
+    "resendCode": "Resend Code",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "backToLogin": "Back to Login",
+    "roleCandidate": "Job Seeker (Candidate)",
+    "roleEmployer": "Employer (Hiring Company)"
+  },
+  "common": {
+    "submit": "Submit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "error": "An unexpected error occurred. Please try again."
+  }
+}

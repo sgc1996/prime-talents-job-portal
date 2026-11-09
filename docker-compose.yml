@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: worklanka-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: worklanka_user
+      POSTGRES_PASSWORD: worklanka_secret_password
+      POSTGRES_DB: worklanka_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U worklanka_user -d worklanka_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: worklanka-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_DATABASE: "" # in-memory
+
+volumes:
+  pgdata:
+    driver: local
