@@ -181,3 +181,4 @@ export function JobFilterSidebar({ districts, sectors }: FilterSidebarProps) {
     </div>
   );
 }
+

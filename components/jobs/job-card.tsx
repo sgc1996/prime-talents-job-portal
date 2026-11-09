@@ -152,3 +152,4 @@ export function JobCard({ job, isSaved = false }: JobCardProps) {
     </div>
   );
 }
+

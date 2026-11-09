@@ -17,6 +17,7 @@ import {
   RefreshCw,
   Plus,
   Briefcase,
+  Sparkles,
 } from "lucide-react";
 
 interface JobRow {
@@ -227,6 +228,16 @@ export function EmployerJobsTable({ initialJobs }: EmployerJobsTableProps) {
                           >
                             Review ({job._count.applications})
                           </Link>
+
+                          {job.status === "APPROVED" && (
+                            <Link
+                              href={`/employer/jobs/${job.id}/promote`}
+                              className="p-1.5 rounded-lg border border-amber-300 dark:border-amber-700/50 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition"
+                              title="Promote to Featured"
+                            >
+                              <Sparkles className="w-4 h-4" />
+                            </Link>
+                          )}
 
                           {job.status === "APPROVED" && (
                             <Link

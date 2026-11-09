@@ -225,3 +225,4 @@ export class JobRepository {
     return Boolean(record);
   }
 }
+

@@ -75,3 +75,4 @@ export async function submitApplicationAction(data: SubmitApplicationInput) {
 
   return { success: true, applicationId: application.id };
 }
+

@@ -134,3 +134,4 @@ export default async function SearchJobsPage({ searchParams }: SearchJobsPagePro
     </div>
   );
 }
+

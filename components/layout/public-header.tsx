@@ -3,6 +3,7 @@ import { siteConfig } from "@/lib/config/site";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/auth/session";
 import { Briefcase, User, LogIn, LayoutDashboard } from "lucide-react";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export async function PublicHeader() {
   const user = await getCurrentUser();
@@ -46,6 +47,8 @@ export async function PublicHeader() {
 
         {/* Right Action buttons */}
         <div className="flex items-center space-x-3">
+          <LanguageSwitcher />
+
           {user ? (
             <div className="flex items-center space-x-3">
               <Link href={getDashboardLink()}>
@@ -84,3 +87,4 @@ export async function PublicHeader() {
     </header>
   );
 }
+

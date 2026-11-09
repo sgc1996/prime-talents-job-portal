@@ -121,3 +121,4 @@ export default async function JobApplicationsPage({ params }: ATSPageProps) {
     </div>
   );
 }
+

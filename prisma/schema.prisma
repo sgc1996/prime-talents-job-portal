@@ -117,6 +117,8 @@ enum FileKind {
   LOGO
   COVER
   GALLERY
+  POSTER
+  BANK_SLIP
 }
 
 enum AlertFrequency {
@@ -468,6 +470,7 @@ model Job {
   moderationNote   String?
   isFeatured       Boolean         @default(false)
   featuredUntil    DateTime?
+  posterUrl        String?
   viewCount        Int             @default(0)
   publishedAt      DateTime?
   expiresAt        DateTime?
@@ -483,6 +486,7 @@ model Job {
   screeningQuestions ScreeningQuestion[]
   applications       Application[]
   savedJobs          SavedJob[]
+  orders             Order[]
 
   @@index([status, publishedAt(sort: Desc)])
   @@index([sectorId])
@@ -641,19 +645,26 @@ model Package {
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  userId    String
-  packageId String
-  amountLkr Int
-  status    OrderStatus @default(PENDING)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id            String      @id @default(cuid())
+  userId        String
+  packageId     String
+  jobId         String?
+  amountLkr     Int
+  status        OrderStatus @default(PENDING)
+  slipFileId    String?
+  bankReference String?
+  adminNote     String?
+  approvedAt    DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   package  Package   @relation(fields: [packageId], references: [id])
+  job      Job?      @relation(fields: [jobId], references: [id], onDelete: SetNull)
   payments Payment[]
 
   @@index([userId])
+  @@index([jobId])
 }
 
 model Payment {

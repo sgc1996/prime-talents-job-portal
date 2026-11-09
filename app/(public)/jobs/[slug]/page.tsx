@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db/prisma";
 import { Badge } from "@/components/ui/badge";
 import { ApplyModal } from "@/components/jobs/apply-modal";
 import { SaveJobButton } from "@/components/jobs/save-job-button";
+import { JobPosterLightbox } from "@/components/jobs/job-poster-lightbox";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { Metadata } from "next";
@@ -251,6 +252,10 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Main Description & Requirements */}
           <div className="space-y-8 lg:col-span-2">
+            {job.posterUrl && (
+              <JobPosterLightbox posterUrl={job.posterUrl} jobTitle={job.title} />
+            )}
+
             <div className="rounded-xl border bg-card p-6 md:p-8 space-y-6">
               {/* Description */}
               <div>

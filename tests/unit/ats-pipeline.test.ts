@@ -73,3 +73,4 @@ describe("Phase 2: ATS Pipeline & Candidate Lifecycle", () => {
     expect(canTransition("NEW", "HIRED")).toBe(false);
   });
 });
+

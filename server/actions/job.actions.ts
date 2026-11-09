@@ -47,3 +47,4 @@ export async function toggleSaveJobAction(jobId: string) {
   revalidatePath(`/candidate/saved`);
   return { success: true, saved: true };
 }
+

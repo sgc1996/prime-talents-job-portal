@@ -1,103 +1,179 @@
+import { Metadata } from "next";
+import Link from "next/link";
 import { requireRoleUser } from "@/lib/auth/session";
-import { PlaceholderNav } from "@/components/layout/placeholder-nav";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ShieldCheck, ShieldAlert, Check, X } from "lucide-react";
-import { can } from "@/lib/rbac";
-import { PERMISSIONS } from "@/lib/rbac/permissions";
+import { AdminRepository } from "@/server/repositories/admin.repository";
+import { Button } from "@/components/ui/button";
+import {
+  Users,
+  Briefcase,
+  Building2,
+  CreditCard,
+  PlusCircle,
+  CheckSquare,
+} from "lucide-react";
 
-export default async function AdminPlaceholderPage() {
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Admin Overview | WorkLanka",
+};
+
+export default async function AdminDashboardPage() {
   const user = await requireRoleUser(["SUPER_ADMIN", "MODERATOR"]);
-
-  const canManageUsers = can(user, PERMISSIONS.USER_CREATE);
-  const canManageSettings = can(user, PERMISSIONS.SETTINGS_MANAGE);
-  const canModerateJobs = can(user, PERMISSIONS.MODERATION_JOBS);
-  const canModerateReviews = can(user, PERMISSIONS.MODERATION_REVIEWS);
+  const kpis = await AdminRepository.getKPIs();
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <PlaceholderNav name={user.name} role={user.role} />
+    <div className="space-y-8">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Administrative Control Center
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+            Welcome back, {user.name || user.email} ({user.role}). Real-time platform pulse.
+          </p>
+        </div>
 
-      <main className="container mx-auto px-4 py-12">
-        <Card className="mx-auto max-w-2xl">
-          <CardHeader>
-            <div className="flex items-center space-x-3">
-              <div className="rounded-full bg-primary/10 p-2.5 text-primary">
-                {user.role === "SUPER_ADMIN" ? (
-                  <ShieldCheck className="h-6 w-6" />
-                ) : (
-                  <ShieldAlert className="h-6 w-6" />
-                )}
+        <Link href="/admin/jobs/new">
+          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs">
+            <PlusCircle className="w-4 h-4 mr-2" />
+            Post Vacancy with Flyer
+          </Button>
+        </Link>
+      </div>
+
+      {/* KPI Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider">Total Users</span>
+            <Users className="w-4 h-4 text-slate-400" />
+          </div>
+          <p className="text-2xl font-bold text-slate-900 dark:text-white">{kpis.totalUsers}</p>
+          <p className="text-[11px] text-slate-500 mt-1">Platform community</p>
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider">Active Jobs</span>
+            <Briefcase className="w-4 h-4 text-emerald-500" />
+          </div>
+          <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{kpis.activeJobsCount}</p>
+          <p className="text-[11px] text-slate-500 mt-1">Live on board</p>
+        </div>
+
+        <Link
+          href="/admin/moderation/jobs"
+          className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-amber-400 transition group"
+        >
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-amber-600">Pending Jobs</span>
+            <CheckSquare className="w-4 h-4 text-amber-500 group-hover:scale-110 transition" />
+          </div>
+          <p className="text-2xl font-bold text-amber-600">{kpis.pendingJobsCount}</p>
+          <p className="text-[11px] text-slate-500 mt-1">Requires review &rarr;</p>
+        </Link>
+
+        <Link
+          href="/admin/moderation/employers"
+          className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-blue-400 transition group"
+        >
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-600">Pending Companies</span>
+            <Building2 className="w-4 h-4 text-blue-500 group-hover:scale-110 transition" />
+          </div>
+          <p className="text-2xl font-bold text-blue-600">{kpis.pendingEmployersCount}</p>
+          <p className="text-[11px] text-slate-500 mt-1">Awaiting verification &rarr;</p>
+        </Link>
+
+        <Link
+          href="/admin/payments"
+          className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-purple-400 transition group"
+        >
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-purple-600">Bank Slips</span>
+            <CreditCard className="w-4 h-4 text-purple-500 group-hover:scale-110 transition" />
+          </div>
+          <p className="text-2xl font-bold text-purple-600">{kpis.pendingSlipsCount}</p>
+          <p className="text-[11px] text-slate-500 mt-1">Promotion receipts &rarr;</p>
+        </Link>
+
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider">Candidates</span>
+            <Users className="w-4 h-4 text-slate-400" />
+          </div>
+          <p className="text-2xl font-bold text-slate-900 dark:text-white">{kpis.candidatesCount}</p>
+          <p className="text-[11px] text-slate-500 mt-1">Active talent profiles</p>
+        </div>
+      </div>
+
+      {/* Quick Action Navigation Grid */}
+      <div>
+        <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4">
+          Priority Operational Tasks
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center mb-3">
+                <PlusCircle className="w-5 h-5" />
               </div>
-              <div>
-                <CardTitle className="text-xl">Admin Backend Portal</CardTitle>
-                <CardDescription>
-                  Protected Area: Authorized for SUPER_ADMIN &amp; MODERATOR
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="rounded-md bg-muted p-4">
-              <p className="text-lg font-medium text-foreground">
-                Hello, <span className="text-primary font-bold">{user.name}</span> ({user.role})
+              <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1">
+                Post Job with Flyer
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Publish a newspaper clipping or graphic advertisement flyer directly as a verified vacancy.
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                You are authenticated with administrative privileges. Guards and RBAC verified.
+            </div>
+            <Link href="/admin/jobs/new" className="mt-4">
+              <Button size="sm" className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs">
+                Post Vacancy Now
+              </Button>
+            </Link>
+          </div>
+
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 flex items-center justify-center mb-3">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1">
+                Employer Verifications
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Review pending company registrations, inspect BR documents, and grant the official Blue Tick badge.
               </p>
             </div>
+            <Link href="/admin/moderation/employers" className="mt-4">
+              <Button size="sm" variant="outline" className="w-full text-xs">
+                Inspect ({kpis.pendingEmployersCount} Pending)
+              </Button>
+            </Link>
+          </div>
 
-            <div className="rounded-lg border p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Permission Audit for {user.role}
-              </h4>
-              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 text-sm">
-                <div className="flex items-center space-x-2">
-                  {canModerateJobs ? (
-                    <Check className="h-4 w-4 text-emerald-600" />
-                  ) : (
-                    <X className="h-4 w-4 text-destructive" />
-                  )}
-                  <span>Job Content Moderation</span>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  {canModerateReviews ? (
-                    <Check className="h-4 w-4 text-emerald-600" />
-                  ) : (
-                    <X className="h-4 w-4 text-destructive" />
-                  )}
-                  <span>Review Moderation</span>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  {canManageUsers ? (
-                    <Check className="h-4 w-4 text-emerald-600" />
-                  ) : (
-                    <X className="h-4 w-4 text-destructive" />
-                  )}
-                  <span>User &amp; Role Management</span>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  {canManageSettings ? (
-                    <Check className="h-4 w-4 text-emerald-600" />
-                  ) : (
-                    <X className="h-4 w-4 text-destructive" />
-                  )}
-                  <span>System Configuration</span>
-                </div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 flex items-center justify-center mb-3">
+                <CreditCard className="w-5 h-5" />
               </div>
-
-              {user.role === "MODERATOR" && (
-                <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">
-                  Note: As a Moderator, user management and system settings are strictly blocked.
-                </p>
-              )}
+              <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1">
+                Bank Slip Promotions
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Validate employer bank deposit receipts and immediately feature vacancies for 30 days.
+              </p>
             </div>
-          </CardContent>
-        </Card>
-      </main>
+            <Link href="/admin/payments" className="mt-4">
+              <Button size="sm" variant="outline" className="w-full text-xs">
+                Review Slips ({kpis.pendingSlipsCount} Pending)
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-

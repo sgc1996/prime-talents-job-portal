@@ -67,3 +67,4 @@ export async function updateCandidateProfileAction(data: UpdateCandidateProfileI
 
   return { success: true };
 }
+

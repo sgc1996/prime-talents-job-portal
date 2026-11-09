@@ -68,3 +68,4 @@ export class LocalStorageAdapter implements StorageAdapter {
     return `/uploads/${key}`;
   }
 }
+

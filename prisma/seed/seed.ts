@@ -132,6 +132,22 @@ async function main() {
     console.log("✓ Sample Jobs seeded successfully.");
   }
 
+  // 7. Seed Pricing Packages
+  console.log("\n7. Seeding Promotion Packages...");
+  const PACKAGES = [
+    { name: "Standard Listing", slug: "standard-free", priceLkr: 0, durationDays: 30, jobPostLimit: 5, featuredJobLimit: 0 },
+    { name: "Featured Vacancy (30 Days)", slug: "featured-30-days", priceLkr: 15000, durationDays: 30, jobPostLimit: 1, featuredJobLimit: 1 },
+    { name: "Enterprise Pro Pack", slug: "enterprise-pro", priceLkr: 45000, durationDays: 90, jobPostLimit: 10, featuredJobLimit: 5 },
+  ];
+  for (const pkg of PACKAGES) {
+    await prisma.package.upsert({
+      where: { slug: pkg.slug },
+      update: { name: pkg.name, priceLkr: pkg.priceLkr, durationDays: pkg.durationDays, jobPostLimit: pkg.jobPostLimit, featuredJobLimit: pkg.featuredJobLimit },
+      create: pkg,
+    });
+  }
+  console.log("✓ Promotion packages seeded successfully.");
+
   console.log("\n=================================================");
   console.log("Database Seeding Completed Successfully! 🎉");
   console.log("=================================================");
