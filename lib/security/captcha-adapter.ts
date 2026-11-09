@@ -62,3 +62,4 @@ export function getCaptchaAdapter(): CaptchaAdapter {
   }
   return new NullCaptchaAdapter();
 }
+

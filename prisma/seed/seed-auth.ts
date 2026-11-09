@@ -305,3 +305,4 @@ export async function seedUsers(prisma: PrismaClient) {
     employerProfiles: [empProfile1, empProfile2, empProfile3],
   };
 }
+

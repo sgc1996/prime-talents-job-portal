@@ -32,3 +32,4 @@ export function hashCryptoToken(token: string): string {
 export function generateSecureToken(): string {
   return crypto.randomBytes(32).toString("hex");
 }
+

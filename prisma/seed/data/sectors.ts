@@ -128,3 +128,4 @@ export const SECTORS_DATA: SeedSector[] = [
   { name: "Telecommunications", slug: "telecommunications", sortOrder: 35 },
   { name: "Trade & Commerce", slug: "trade-commerce", sortOrder: 36 },
 ];
+

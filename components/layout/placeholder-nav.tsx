@@ -39,3 +39,4 @@ export function PlaceholderNav({ name, role }: PlaceholderNavProps) {
     </nav>
   );
 }
+

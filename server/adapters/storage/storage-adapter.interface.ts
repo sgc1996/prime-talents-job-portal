@@ -16,3 +16,4 @@ export interface StorageAdapter {
   deleteFile(key: string): Promise<boolean>;
   getDownloadUrl(key: string): Promise<string>;
 }
+

@@ -119,3 +119,4 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     </form>
   );
 }
+

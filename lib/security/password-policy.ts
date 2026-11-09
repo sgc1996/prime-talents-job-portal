@@ -64,3 +64,4 @@ export const passwordSchema = z
     (val) => !isCommonPassword(val),
     "This password is too common or easily guessable. Please choose a stronger password.",
   );
+

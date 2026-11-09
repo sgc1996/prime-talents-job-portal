@@ -125,3 +125,4 @@ Content management and dynamic platform settings.
 
 ### `AuditLog`
 Append-only governance trail recording the actor, action, before/after JSON states, IP address, and user agent.
+

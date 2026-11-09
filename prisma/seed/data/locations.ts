@@ -85,3 +85,4 @@ export const SRI_LANKA_LOCATIONS: SeedProvince[] = [
     ],
   },
 ];
+

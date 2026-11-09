@@ -20,3 +20,4 @@ export function formatCurrency(amount: number, currency = "LKR"): string {
     maximumFractionDigits: 0,
   }).format(amount);
 }
+

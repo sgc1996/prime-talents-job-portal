@@ -68,3 +68,4 @@ Append-only audit records are written to `AuditLog` in PostgreSQL for:
 2. User role promotion / demotion.
 3. User suspension / reactivation.
 4. Password resets and password changes.
+

@@ -391,3 +391,4 @@ export async function seedJobsAndApplications(prisma: PrismaClient) {
     }
   }
 }
+

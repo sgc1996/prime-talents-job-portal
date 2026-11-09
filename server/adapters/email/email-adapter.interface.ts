@@ -12,3 +12,4 @@ export interface EmailAdapter {
   sendPasswordReset(to: string, resetUrl: string, recipientName?: string): Promise<boolean>;
   sendLockoutAlert(to: string, minutes: number, recipientName?: string): Promise<boolean>;
 }
+

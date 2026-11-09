@@ -771,3 +771,4 @@ model AuditLog {
   @@index([action])
   @@index([entityType, entityId])
 }
+

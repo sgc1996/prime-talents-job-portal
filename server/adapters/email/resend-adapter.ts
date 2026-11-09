@@ -102,3 +102,4 @@ export class ResendAdapter implements EmailAdapter {
     return result.success;
   }
 }
+

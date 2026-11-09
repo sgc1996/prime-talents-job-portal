@@ -154,3 +154,4 @@ export class VerificationService {
     return VerificationRepository.findActivePasswordResetToken(tokenHash);
   }
 }
+

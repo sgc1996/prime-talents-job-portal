@@ -63,3 +63,4 @@ export const changePasswordSchema = z.object({
 export const changeEmailSchema = z.object({
   newEmail: z.string().email("Please enter a valid email address").toLowerCase(),
 });
+

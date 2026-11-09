@@ -62,3 +62,4 @@ export default async function VerifyTokenPage({ searchParams }: VerifyTokenPageP
     </Card>
   );
 }
+

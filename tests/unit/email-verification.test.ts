@@ -80,3 +80,4 @@ describe("Email Verification Code & Token Logic", () => {
     expect(pastExpiry.getTime() > now.getTime()).toBe(false);
   });
 });
+

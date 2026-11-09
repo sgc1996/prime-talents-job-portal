@@ -44,3 +44,4 @@ export const SKILLS_DATA: string[] = [
   "Power BI", "Tableau", "Time Management", "Leadership", "Team Collaboration",
   "Problem Solving", "Conflict Resolution", "Business Communication", "Presentation Skills",
 ];
+
