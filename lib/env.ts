@@ -8,6 +8,7 @@ const envSchema = z.object({
 
   // Database
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  DIRECT_URL: z.string().optional(),
 
   // Authentication
   AUTH_SECRET: z

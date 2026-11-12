@@ -76,12 +76,15 @@ export async function PublicHeader() {
             </div>
           )}
 
-          <Link href={user?.role === "EMPLOYER" ? "/employer/jobs/new" : "/register"}>
-            <Button size="sm" variant="default" className="hidden sm:flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
-              <Briefcase className="h-4 w-4" />
-              <span>Post a Job</span>
-            </Button>
-          </Link>
+          {/* Post a Job button (shown only to EMPLOYER or guest visitors, NOT candidates) */}
+          {user?.role !== "CANDIDATE" && (
+            <Link href={user?.role === "EMPLOYER" ? "/employer/jobs/new" : "/register"}>
+              <Button size="sm" variant="default" className="hidden sm:flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
+                <Briefcase className="h-4 w-4" />
+                <span>Post a Job</span>
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </header>

@@ -15,6 +15,22 @@ export interface JobFilterParams {
   sortBy?: "recent" | "salary_desc";
 }
 
+export interface SectorItem {
+  id: string;
+  name: string;
+  slug: string;
+  jobCount: number;
+}
+
+// In-memory cache with TTL for static taxonomy (districts & sectors)
+let cachedDistricts: any = null;
+let cachedDistrictsExpiry = 0;
+
+let cachedSectors: SectorItem[] | null = null;
+let cachedSectorsExpiry = 0;
+
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
 export class JobRepository {
   static async searchJobs(params: JobFilterParams) {
     const page = Math.max(1, params.page || 1);
@@ -162,6 +178,11 @@ export class JobRepository {
   }
 
   static async getSectorsWithCounts() {
+    const now = Date.now();
+    if (cachedSectors && now < cachedSectorsExpiry) {
+      return cachedSectors;
+    }
+
     const sectors = await prisma.sector.findMany({
       where: { isActive: true },
       include: {
@@ -176,21 +197,34 @@ export class JobRepository {
       orderBy: { sortOrder: "asc" },
     });
 
-    return sectors.map((s) => ({
+    const result = sectors.map((s) => ({
       id: s.id,
       name: s.name,
       slug: s.slug,
       jobCount: s._count.jobs,
     }));
+
+    cachedSectors = result;
+    cachedSectorsExpiry = now + CACHE_TTL_MS;
+    return result;
   }
 
   static async getDistricts() {
-    return prisma.district.findMany({
+    const now = Date.now();
+    if (cachedDistricts && now < cachedDistrictsExpiry) {
+      return cachedDistricts;
+    }
+
+    const districts = await prisma.district.findMany({
       include: {
         province: true,
       },
       orderBy: { name: "asc" },
     });
+
+    cachedDistricts = districts;
+    cachedDistrictsExpiry = now + CACHE_TTL_MS;
+    return districts;
   }
 
   static async getCompanyBySlug(slug: string) {

@@ -9,11 +9,9 @@ import { Briefcase, Building2, MapPin, CheckCircle, ArrowRight } from "lucide-re
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [districts, sectors, featuredJobs] = await Promise.all([
-    JobRepository.getDistricts(),
-    JobRepository.getSectorsWithCounts(),
-    JobRepository.getFeaturedJobs(6),
-  ]);
+  const districts = await JobRepository.getDistricts();
+  const sectors = await JobRepository.getSectorsWithCounts();
+  const featuredJobs = await JobRepository.getFeaturedJobs(6);
 
   const topSectors = sectors.slice(0, 8);
 
