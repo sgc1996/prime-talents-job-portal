@@ -113,7 +113,7 @@ export function BankSlipUploadForm({ job, existingPendingOrder }: BankSlipUpload
         notes: notes.trim() || undefined,
       });
 
-      toast.success("Deposit slip submitted! WorkLanka admin will verify and activate your featured promotion.");
+      toast.success("Deposit slip submitted! Prime Hire admin will verify and activate your featured promotion.");
       router.push(`/employer/jobs`);
     } catch (err: any) {
       toast.error(err.message || "Failed to submit promotion request");
@@ -157,14 +157,14 @@ export function BankSlipUploadForm({ job, existingPendingOrder }: BankSlipUpload
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-4 shadow-xs">
         <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
           <Building className="w-4 h-4 text-emerald-600" />
-          <span>Official WorkLanka Bank Accounts (Direct Deposit / Online Transfer)</span>
+          <span>Official Prime Hire Bank Accounts (Direct Deposit / Online Transfer)</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           {/* Account 1: Commercial Bank */}
           <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-1">
             <span className="font-bold text-emerald-600 dark:text-emerald-400">Commercial Bank of Ceylon</span>
-            <p><span className="text-slate-500">Account Name:</span> WorkLanka Technologies (Pvt) Ltd</p>
+            <p><span className="text-slate-500">Account Name:</span> Prime Talents Solutions (Pvt) Ltd</p>
             <p><span className="text-slate-500">Account Number:</span> <span className="font-mono font-bold">1000 8472 9182</span></p>
             <p><span className="text-slate-500">Branch:</span> Kollupitiya Super Branch (Code: 045)</p>
           </div>
@@ -172,7 +172,7 @@ export function BankSlipUploadForm({ job, existingPendingOrder }: BankSlipUpload
           {/* Account 2: BOC */}
           <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-1">
             <span className="font-bold text-amber-600 dark:text-amber-400">Bank of Ceylon (BOC)</span>
-            <p><span className="text-slate-500">Account Name:</span> WorkLanka Technologies (Pvt) Ltd</p>
+            <p><span className="text-slate-500">Account Name:</span> Prime Talents Solutions (Pvt) Ltd</p>
             <p><span className="text-slate-500">Account Number:</span> <span className="font-mono font-bold">0089 2819 2819</span></p>
             <p><span className="text-slate-500">Branch:</span> Corporate Branch (Code: 001)</p>
           </div>

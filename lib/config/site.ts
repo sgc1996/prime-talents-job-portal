@@ -1,14 +1,16 @@
 /**
- * Site & Brand Configuration for WorkLanka
+ * Site & Brand Configuration for Prime Hire
  * Single source of truth for branding, metadata, contact info, and role routing.
  */
 export const siteConfig = {
-  name: process.env.NEXT_PUBLIC_APP_NAME || "WorkLanka",
+  name: process.env.NEXT_PUBLIC_APP_NAME || "Prime Hire",
   tagline: "Sri Lanka's Next-Generation Career & Recruitment Platform",
   description:
     "Connecting Sri Lankan talent with top employers across all 9 provinces and 25 districts.",
   url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@worklanka.lk",
+  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@primehire.lk",
+  logo: "/images/logo.png",
+  favicon: "/favicon.ico",
   links: {
     terms: "/terms",
     privacy: "/privacy",

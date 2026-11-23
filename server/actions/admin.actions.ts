@@ -47,7 +47,7 @@ export async function createAdminJobAction(data: AdminCreateJobInput) {
 
   // If no employer selected, find or create direct posting company
   if (!targetEmployerId) {
-    const directCompanyName = data.companyNameIfDirect?.trim() || "WorkLanka Direct Postings";
+    const directCompanyName = data.companyNameIfDirect?.trim() || "Prime Hire Direct Postings";
     const slug = directCompanyName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
@@ -64,7 +64,7 @@ export async function createAdminJobAction(data: AdminCreateJobInput) {
           companyName: directCompanyName,
           slug: `${slug}-${Math.floor(1000 + Math.random() * 9000)}`,
           verificationStatus: EmployerVerificationStatus.VERIFIED,
-          about: "Official direct listing published by WorkLanka Administration.",
+          about: "Official direct listing published by Prime Hire Administration.",
           districtId: data.districtId || null,
           sectorId: data.sectorId,
         },
@@ -195,7 +195,7 @@ export async function verifyEmployerAction(
           : "⚠️ Company Verification Update",
       message:
         action === "VERIFY"
-          ? `Your organization "${employer.companyName}" has been officially verified by WorkLanka administration. Your jobs are now live with the Verified Badge.`
+          ? `Your organization "${employer.companyName}" has been officially verified by Prime Hire administration. Your jobs are now live with the Verified Badge.`
           : `Verification for "${employer.companyName}" was rejected. Reason: ${note || "Credentials did not meet verification criteria."}`,
       link: `/employer/profile`,
     },

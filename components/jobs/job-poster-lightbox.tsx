@@ -74,7 +74,7 @@ export function JobPosterLightbox({ posterUrl, jobTitle }: JobPosterLightboxProp
               <div className="flex items-center gap-2">
                 <a
                   href={posterUrl}
-                  download="worklanka-job-advertisement"
+                  download="primehire-job-advertisement"
                   target="_blank"
                   rel="noreferrer"
                   className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition flex items-center gap-1.5 text-xs font-medium"

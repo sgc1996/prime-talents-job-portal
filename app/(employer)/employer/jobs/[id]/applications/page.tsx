@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: ATSPageProps): Promise<Metada
   });
 
   return {
-    title: job ? `ATS: ${job.title} | WorkLanka Employer` : "Applicant Tracking | WorkLanka",
+    title: job ? `ATS: ${job.title} | Prime Hire Employer` : "Applicant Tracking | Prime Hire",
   };
 }
 

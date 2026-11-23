@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/lib/config/site";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/auth/session";
@@ -20,13 +21,23 @@ export async function PublicHeader() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Brand */}
         <div className="flex items-center space-x-6">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-black tracking-tight text-primary">
-              {siteConfig.name}
-            </span>
-            <span className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-semibold text-primary">
-              LK
-            </span>
+          <Link href="/" className="flex items-center space-x-2.5 group">
+            <Image
+              src="/images/logo.png"
+              alt={siteConfig.name}
+              width={34}
+              height={34}
+              className="h-8 w-8 object-contain rounded transition-transform group-hover:scale-105"
+              priority
+            />
+            <div className="flex items-center space-x-1.5">
+              <span className="text-2xl font-black tracking-tight text-primary">
+                {siteConfig.name}
+              </span>
+              <span className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-semibold text-primary">
+                LK
+              </span>
+            </div>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">

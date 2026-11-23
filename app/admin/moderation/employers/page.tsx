@@ -8,7 +8,7 @@ import { EmployerVerificationTable } from "@/components/admin/employer-verificat
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Verify Employers | WorkLanka Moderation",
+  title: "Verify Employers | Prime Hire Moderation",
   description: "Employer verification queue to inspect new organization registrations.",
 };
 

@@ -15,7 +15,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Admin Overview | WorkLanka",
+  title: "Admin Overview | Prime Hire",
 };
 
 export default async function AdminDashboardPage() {

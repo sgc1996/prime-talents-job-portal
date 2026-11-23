@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PromotePageProps): Promise<Me
   });
 
   return {
-    title: job ? `Promote ${job.title} | WorkLanka Employer` : "Promote Vacancy",
+    title: job ? `Promote ${job.title} | Prime Hire Employer` : "Promote Vacancy",
   };
 }
 

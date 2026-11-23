@@ -8,7 +8,7 @@ import { AdminJobPostForm } from "@/components/admin/admin-job-post-form";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Admin Post Vacancy (Flyer & Direct) | WorkLanka",
+  title: "Admin Post Vacancy (Flyer & Direct) | Prime Hire",
   description: "Publish a vacancy or newspaper advertisement flyer as an administrator.",
 };
 

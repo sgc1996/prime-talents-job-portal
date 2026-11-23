@@ -4,7 +4,7 @@ import { Check, Sparkles, Building, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Pricing & Featured Vacancy Packages | WorkLanka",
+  title: "Pricing & Featured Vacancy Packages | Prime Hire",
   description: "Promote your vacancies and reach top Sri Lankan talent with featured listing packages.",
 };
 
@@ -57,7 +57,7 @@ const TIERS = [
       "Custom invoice / PO support",
     ],
     cta: "Contact Enterprise",
-    href: "mailto:support@worklanka.lk?subject=Enterprise%20Pro%20Inquiry",
+    href: "mailto:support@primehire.lk?subject=Enterprise%20Pro%20Inquiry",
     highlight: false,
   },
 ];

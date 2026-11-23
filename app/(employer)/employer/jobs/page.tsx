@@ -6,7 +6,7 @@ import { EmployerJobsTable } from "@/components/employer/employer-jobs-table";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Manage Vacancies | WorkLanka Employer",
+  title: "Manage Vacancies | Prime Hire Employer",
   description: "View and manage all active, draft, and closed job postings.",
 };
 

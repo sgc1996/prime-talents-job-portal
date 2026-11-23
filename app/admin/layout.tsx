@@ -6,7 +6,7 @@ import { AdminSidebar } from "@/components/admin/admin-sidebar";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "WorkLanka Control Panel",
+  title: "Prime Hire Control Panel",
   description: "Administrative backend for job moderation, employer verification, and platform management.",
 };
 

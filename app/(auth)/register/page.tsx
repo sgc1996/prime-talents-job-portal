@@ -21,7 +21,7 @@ export default function RegisterPage() {
       <CardHeader className="space-y-1 text-center">
         <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
         <CardDescription>
-          Choose your account type to register on WorkLanka
+          Choose your account type to register on Prime Hire
         </CardDescription>
 
         <div className="grid grid-cols-2 gap-2 pt-2">

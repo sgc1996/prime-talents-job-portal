@@ -8,7 +8,7 @@ import { JobModerationTable } from "@/components/admin/job-moderation-table";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Review Vacancies | WorkLanka Moderation",
+  title: "Review Vacancies | Prime Hire Moderation",
   description: "Moderation queue for pending employer job postings.",
 };
 

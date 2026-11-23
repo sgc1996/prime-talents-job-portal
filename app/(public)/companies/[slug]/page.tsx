@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: CompanyProfilePageProps): Pro
 
   return {
     title: `${company.companyName} Careers & Jobs in Sri Lanka`,
-    description: company.about || `Explore career openings at ${company.companyName} on WorkLanka.`,
+    description: company.about || `Explore career openings at ${company.companyName} on Prime Hire.`,
   };
 }
 

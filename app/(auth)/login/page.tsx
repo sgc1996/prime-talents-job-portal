@@ -11,7 +11,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Sign In",
-  description: "Sign in to your WorkLanka account",
+  description: "Sign in to your Prime Hire account",
 };
 
 export default function LoginPage() {
@@ -20,7 +20,7 @@ export default function LoginPage() {
       <CardHeader className="space-y-1 text-center">
         <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
         <CardDescription>
-          Enter your credentials to access your WorkLanka account
+          Enter your credentials to access your Prime Hire account
         </CardDescription>
       </CardHeader>
       <CardContent>

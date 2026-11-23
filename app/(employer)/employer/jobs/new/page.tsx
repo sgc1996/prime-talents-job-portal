@@ -8,8 +8,8 @@ import { JobWizardForm } from "@/components/employer/job-wizard-form";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Post a New Vacancy | WorkLanka Employer",
-  description: "Create and publish a new job vacancy on WorkLanka.",
+  title: "Post a New Vacancy | Prime Hire Employer",
+  description: "Create and publish a new job vacancy on Prime Hire.",
 };
 
 export default async function NewJobPage() {

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { UserRole } from "@prisma/client";
 import { signOut } from "next-auth/react";
@@ -16,7 +17,6 @@ import {
   Globe,
   LogOut,
   ChevronRight,
-  Shield,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -91,12 +91,16 @@ export function AdminSidebar({ user, counts }: AdminSidebarProps) {
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <Link href="/admin" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
-            <Shield className="w-5 h-5 text-emerald-400 dark:text-white" />
-          </div>
+          <Image
+            src="/images/logo.png"
+            alt="Prime Hire"
+            width={36}
+            height={36}
+            className="w-9 h-9 object-contain rounded-lg"
+          />
           <div>
             <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white block">
-              WorkLanka
+              Prime Hire
             </span>
             <span className="text-[10px] uppercase font-semibold tracking-wider text-emerald-600 dark:text-emerald-400 block -mt-0.5">
               Control Panel

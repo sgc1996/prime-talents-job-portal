@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Audit Trail | WorkLanka Super Admin",
+  title: "Audit Trail | Prime Hire Super Admin",
   description: "Tamper-evident log of administrative actions across the platform.",
 };
 

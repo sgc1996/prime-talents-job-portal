@@ -8,7 +8,7 @@ import { PaymentVerificationTable } from "@/components/admin/payment-verificatio
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Bank Slip Verifications | WorkLanka Admin",
+  title: "Bank Slip Verifications | Prime Hire Admin",
   description: "Review uploaded employer bank deposit receipts and feature job postings.",
 };
 

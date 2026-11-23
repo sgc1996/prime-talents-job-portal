@@ -8,6 +8,8 @@ export const COMMON_PASSWORDS = new Set([
   "password1234",
   "admin123456",
   "welcome1234",
+  "primehire123",
+  "primehire2026",
   "worklanka123",
   "worklanka2024",
   "worklanka2025",

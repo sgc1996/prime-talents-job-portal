@@ -502,7 +502,7 @@ export function AdminJobPostForm({
           {[
             { id: "EMAIL", label: "Direct Email", desc: "Candidates send CV to specific email" },
             { id: "EXTERNAL_URL", label: "External Link", desc: "Redirects to external company career URL" },
-            { id: "ON_PLATFORM", label: "WorkLanka Easy Apply", desc: "Submit PDF resume on WorkLanka" },
+            { id: "ON_PLATFORM", label: "Prime Hire Easy Apply", desc: "Submit PDF resume on Prime Hire" },
           ].map((m) => (
             <button
               key={m.id}

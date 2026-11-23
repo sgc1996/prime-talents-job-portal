@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/lib/config/site";
 
 export function PublicFooter() {
@@ -19,7 +20,14 @@ export function PublicFooter() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:grid-cols-5">
           {/* Brand info */}
           <div className="space-y-3 lg:col-span-2">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2.5 group">
+              <Image
+                src="/images/logo.png"
+                alt={siteConfig.name}
+                width={34}
+                height={34}
+                className="h-8 w-8 object-contain rounded"
+              />
               <span className="text-2xl font-bold tracking-tight text-primary">
                 {siteConfig.name}
               </span>
@@ -30,9 +38,6 @@ export function PublicFooter() {
             <p className="text-sm max-w-sm">
               Connecting Sri Lankan talent with top local and international employers. Verified opportunities across all 25 districts.
             </p>
-            <div className="text-xs text-muted-foreground pt-2">
-              Brand configuration easily customizable via <code>siteConfig</code>.
-            </div>
           </div>
 
           {/* Job Seekers */}
@@ -77,7 +82,7 @@ export function PublicFooter() {
           {/* Platform & Support */}
           <div className="space-y-3">
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-              WorkLanka
+              {siteConfig.name}
             </h4>
             <ul className="space-y-2 text-sm">
               <li>

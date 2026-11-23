@@ -8,7 +8,7 @@ import { UserManagementTable } from "@/components/admin/user-management-table";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "User Governance | WorkLanka Super Admin",
+  title: "User Governance | Prime Hire Super Admin",
   description: "Manage and audit registered user accounts.",
 };
 

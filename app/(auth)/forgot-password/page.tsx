@@ -10,7 +10,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Forgot Password",
-  description: "Reset your WorkLanka password",
+  description: "Reset your Prime Hire password",
 };
 
 export default function ForgotPasswordPage() {

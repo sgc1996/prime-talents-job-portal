@@ -344,7 +344,7 @@ export function JobWizardForm({ sectors, districts }: JobWizardFormProps) {
           <Label>How should candidates apply?</Label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { id: "ON_PLATFORM", label: "WorkLanka Easy Apply", desc: "Collect CV & screen candidates on WorkLanka ATS" },
+              { id: "ON_PLATFORM", label: "Prime Hire Easy Apply", desc: "Collect CV & screen candidates on Prime Hire ATS" },
               { id: "EXTERNAL_URL", label: "External Career Page", desc: "Redirect to your external website / ATS URL" },
               { id: "EMAIL", label: "Direct Email", desc: "Receive CVs and portfolios directly to your inbox" },
             ].map((method) => (

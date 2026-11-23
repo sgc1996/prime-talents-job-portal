@@ -61,7 +61,7 @@ export default async function CandidateApplicationsPage() {
           My Applications
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Real-time tracking of positions you have applied for on WorkLanka.
+          Real-time tracking of positions you have applied for on Prime Hire.
         </p>
       </div>
 

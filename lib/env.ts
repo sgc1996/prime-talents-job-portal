@@ -2,9 +2,9 @@ import { z } from "zod";
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-  NEXT_PUBLIC_APP_NAME: z.string().default("WorkLanka"),
+  NEXT_PUBLIC_APP_NAME: z.string().default("Prime Hire"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
-  NEXT_PUBLIC_SUPPORT_EMAIL: z.string().email().default("support@worklanka.lk"),
+  NEXT_PUBLIC_SUPPORT_EMAIL: z.string().email().default("support@primehire.lk"),
 
   // Database
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
@@ -40,7 +40,7 @@ const envSchema = z.object({
     .optional()
     .default("false")
     .transform((val) => val === "true"),
-  EMAIL_FROM: z.string().default("WorkLanka <noreply@worklanka.lk>"),
+  EMAIL_FROM: z.string().default("Prime Hire <noreply@primehire.lk>"),
   RESEND_API_KEY: z.string().optional(),
 
   // Security / Captcha
