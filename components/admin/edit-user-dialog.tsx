@@ -17,6 +17,7 @@ import {
   Phone,
   Mail,
   User,
+  AlertTriangle,
 } from "lucide-react";
 
 interface EditUserTarget {
@@ -222,6 +223,13 @@ export function EditUserDialog({
                       Cannot change role on your own account
                     </p>
                   )}
+                  {(role === "SUPER_ADMIN" || role === "MODERATOR") &&
+                    (user.role === "CANDIDATE" || user.role === "EMPLOYER") && (
+                      <p className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
+                        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                        Warning: This will grant internal staff access.
+                      </p>
+                    )}
                 </div>
 
                 <div className="space-y-1.5">

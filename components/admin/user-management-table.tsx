@@ -2,10 +2,7 @@
 
 import * as React from "react";
 import { useState } from "react";
-import {
-  toggleUserStatusAction,
-  updateUserRoleAction,
-} from "@/server/actions/admin.actions";
+import { toggleUserStatusAction } from "@/server/actions/admin.actions";
 import { UserRole, UserStatus } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,6 +16,8 @@ import {
   Calendar,
   Shield,
   ShieldAlert,
+  Building2,
+  User,
 } from "lucide-react";
 import { AddStaffDialog } from "./add-staff-dialog";
 import { EditUserDialog } from "./edit-user-dialog";
@@ -53,7 +52,6 @@ export function UserManagementTable({
   const [roleFilter, setRoleFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [loadingStatusId, setLoadingStatusId] = useState<string | null>(null);
-  const [loadingRoleId, setLoadingRoleId] = useState<string | null>(null);
 
   const superAdminCount = users.filter((u) => u.role === "SUPER_ADMIN").length;
   const canAddMoreSuperAdmins = superAdminCount < 2;
@@ -88,23 +86,6 @@ export function UserManagementTable({
       toast.error(err.message || "Failed to update user status");
     } finally {
       setLoadingStatusId(null);
-    }
-  };
-
-  const handleRoleChange = async (userId: string, newRole: UserRole) => {
-    try {
-      setLoadingRoleId(userId);
-      const result = await updateUserRoleAction(userId, newRole);
-      if (result.success) {
-        setUsers((prev) =>
-          prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)),
-        );
-        toast.success(result.message);
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to update user role");
-    } finally {
-      setLoadingRoleId(null);
     }
   };
 
@@ -178,7 +159,6 @@ export function UserManagementTable({
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {filteredUsers.map((user) => {
                 const isStatusLoading = loadingStatusId === user.id;
-                const isRoleLoading = loadingRoleId === user.id;
                 const isSelf = user.id === currentAdminId;
 
                 return (
@@ -214,56 +194,36 @@ export function UserManagementTable({
                     </td>
 
                     <td className="px-6 py-4">
-                      {isSelf ? (
+                      {user.role === "SUPER_ADMIN" ? (
                         <div className="flex items-center gap-1.5">
-                          <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20 text-xs font-semibold">
+                          <Badge className="bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 text-xs font-semibold gap-1">
+                            <ShieldAlert className="w-3 h-3" />
                             Super Admin
                           </Badge>
-                          <span className="text-[10px] text-slate-400 font-mono italic">
-                            (Your Account)
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <select
-                            value={user.role}
-                            disabled={isRoleLoading}
-                            onChange={(e) =>
-                              handleRoleChange(
-                                user.id,
-                                e.target.value as UserRole,
-                              )
-                            }
-                            className={`rounded-lg border px-2.5 py-1 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary ${
-                              user.role === "SUPER_ADMIN"
-                                ? "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800"
-                                : user.role === "MODERATOR"
-                                  ? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800"
-                                  : user.role === "EMPLOYER"
-                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800"
-                                    : "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
-                            }`}
-                          >
-                            <option value="CANDIDATE">Candidate (Job Seeker)</option>
-                            <option value="MODERATOR">Moderator (Staff)</option>
-                            <option
-                              value="SUPER_ADMIN"
-                              disabled={
-                                !canAddMoreSuperAdmins &&
-                                user.role !== "SUPER_ADMIN"
-                              }
-                            >
-                              {!canAddMoreSuperAdmins &&
-                              user.role !== "SUPER_ADMIN"
-                                ? "Super Admin (Max 2 reached)"
-                                : "Super Admin"}
-                            </option>
-                            <option value="EMPLOYER">Employer</option>
-                          </select>
-                          {isRoleLoading && (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+                          {isSelf && (
+                            <span className="text-[10px] text-slate-400 font-mono italic">
+                              (You)
+                            </span>
                           )}
                         </div>
+                      ) : user.role === "MODERATOR" ? (
+                        <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 text-xs font-semibold gap-1">
+                          <Shield className="w-3 h-3" />
+                          Moderator
+                        </Badge>
+                      ) : user.role === "EMPLOYER" ? (
+                        <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-xs font-semibold gap-1">
+                          <Building2 className="w-3 h-3" />
+                          Employer
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="outline"
+                          className="text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 text-xs font-medium gap-1"
+                        >
+                          <User className="w-3 h-3" />
+                          Candidate
+                        </Badge>
                       )}
                     </td>
 
