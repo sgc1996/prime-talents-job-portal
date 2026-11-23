@@ -456,3 +456,192 @@ export async function createStaffUserAction(data: {
   };
 }
 
+// ==========================================
+// 7. SUPER ADMIN: EDIT & DELETE ANY USER
+// ==========================================
+
+export async function updateUserDetailsAdminAction(data: {
+  userId: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  role: UserRole;
+  status: UserStatus;
+  newPassword?: string;
+}) {
+  const admin = await requireRoleUser(["SUPER_ADMIN"]);
+
+  const user = await prisma.user.findUnique({
+    where: { id: data.userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const name = data.name.trim();
+  const email = data.email.toLowerCase().trim();
+  const phone = data.phone?.trim() || null;
+
+  if (!name || name.length < 2) {
+    throw new Error("Name must be at least 2 characters");
+  }
+
+  if (!email || !email.includes("@")) {
+    throw new Error("Invalid email address format");
+  }
+
+  // Prevent self-demotion or self-suspension
+  if (user.id === admin.id) {
+    if (data.role !== "SUPER_ADMIN") {
+      throw new Error("You cannot change or demote your own Super Admin role");
+    }
+    if (data.status !== "ACTIVE") {
+      throw new Error("You cannot suspend your own Super Admin account");
+    }
+  }
+
+  // If changing from SUPER_ADMIN to another role or suspending a SUPER_ADMIN, ensure another exists
+  if (
+    user.role === "SUPER_ADMIN" &&
+    (data.role !== "SUPER_ADMIN" || data.status !== "ACTIVE")
+  ) {
+    const superAdminCount = await prisma.user.count({
+      where: { role: "SUPER_ADMIN", status: "ACTIVE" },
+    });
+    if (superAdminCount <= 1) {
+      throw new Error("Cannot demote or suspend the last remaining active Super Admin");
+    }
+  }
+
+  // Check email conflict
+  if (email !== user.email) {
+    const existing = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (existing && existing.id !== user.id) {
+      throw new Error("This email is already in use by another account");
+    }
+  }
+
+  const updateData: {
+    name: string;
+    email: string;
+    phone: string | null;
+    role: UserRole;
+    status: UserStatus;
+    passwordHash?: string;
+  } = {
+    name,
+    email,
+    phone,
+    role: data.role,
+    status: data.status,
+  };
+
+  if (data.newPassword && data.newPassword.trim().length > 0) {
+    if (data.newPassword.trim().length < 8) {
+      throw new Error("New password must be at least 8 characters");
+    }
+    updateData.passwordHash = await bcrypt.hash(data.newPassword.trim(), 12);
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: user.id },
+    data: updateData,
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: admin.id,
+      action: "USER_UPDATED_BY_ADMIN",
+      entityType: "User",
+      entityId: user.id,
+      before: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        status: user.status,
+      },
+      after: {
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        role: updatedUser.role,
+        status: updatedUser.status,
+        passwordChanged: !!data.newPassword,
+      },
+    },
+  });
+
+  revalidatePath(`/admin/users`);
+  return {
+    success: true,
+    message: `Account for ${updatedUser.name} (${updatedUser.email}) updated successfully`,
+    user: {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      role: updatedUser.role,
+      status: updatedUser.status,
+    },
+  };
+}
+
+export async function deleteUserAdminAction(userId: string) {
+  const admin = await requireRoleUser(["SUPER_ADMIN"]);
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found or already deleted");
+  }
+
+  if (user.id === admin.id) {
+    throw new Error("You cannot delete your own Super Admin account");
+  }
+
+  if (user.role === "SUPER_ADMIN") {
+    const superAdminCount = await prisma.user.count({
+      where: { role: "SUPER_ADMIN", status: "ACTIVE" },
+    });
+    if (superAdminCount <= 1) {
+      throw new Error("Cannot delete the last remaining active Super Admin");
+    }
+  }
+
+  // Record audit log before deletion
+  await prisma.auditLog.create({
+    data: {
+      actorId: admin.id,
+      action: "USER_DELETED_BY_ADMIN",
+      entityType: "User",
+      entityId: userId,
+      before: {
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        status: user.status,
+      },
+    },
+  });
+
+  // Permanently delete user
+  await prisma.user.delete({
+    where: { id: userId },
+  });
+
+  revalidatePath(`/admin/users`);
+  revalidatePath(`/admin`);
+
+  return {
+    success: true,
+    message: `User account (${user.email}) permanently deleted`,
+  };
+}
+
+

@@ -21,6 +21,8 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { AddStaffDialog } from "./add-staff-dialog";
+import { EditUserDialog } from "./edit-user-dialog";
+import { DeleteUserDialog } from "./delete-user-dialog";
 
 interface UserRow {
   id: string;
@@ -188,6 +190,11 @@ export function UserManagementTable({
                       <p className="text-xs text-slate-500 font-mono mt-0.5">
                         {user.email}
                       </p>
+                      {user.phone && (
+                        <p className="text-[11px] text-slate-400 font-mono">
+                          Tel: {user.phone}
+                        </p>
+                      )}
                       {user.employerProfile && (
                         <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">
                           Company: {user.employerProfile.companyName}
@@ -274,45 +281,98 @@ export function UserManagementTable({
                     </td>
 
                     <td className="px-6 py-4 text-right">
-                      {!isSelf && user.role !== "SUPER_ADMIN" ? (
-                        <Button
-                          size="sm"
-                          variant={
-                            user.status === "ACTIVE" ? "outline" : "default"
-                          }
-                          disabled={isStatusLoading}
-                          onClick={() =>
-                            handleToggleStatus(user.id, user.status)
-                          }
-                          className={`text-xs h-8 px-3 ${
-                            user.status === "ACTIVE"
-                              ? "text-rose-600 hover:bg-rose-50 border-rose-200 dark:hover:bg-rose-950/40"
-                              : "bg-emerald-600 hover:bg-emerald-700 text-white"
-                          }`}
-                        >
-                          {isStatusLoading ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          ) : user.status === "ACTIVE" ? (
-                            <>
-                              <AlertTriangle className="w-3.5 h-3.5 mr-1" />
-                              Suspend
-                            </>
-                          ) : (
-                            <>
-                              <CheckCircle className="w-3.5 h-3.5 mr-1" />
-                              Activate
-                            </>
-                          )}
-                        </Button>
-                      ) : isSelf ? (
-                        <span className="text-xs text-slate-400 font-mono italic">
-                          Current Session
-                        </span>
-                      ) : (
-                        <span className="text-xs text-purple-600 dark:text-purple-400 font-mono italic">
-                          Super Admin
-                        </span>
-                      )}
+                      <div className="flex items-center justify-end gap-1.5">
+                        {/* 1. Edit User Account Dialog */}
+                        <EditUserDialog
+                          user={{
+                            id: user.id,
+                            name: user.name,
+                            email: user.email,
+                            phone: user.phone,
+                            role: user.role,
+                            status: user.status,
+                          }}
+                          isSelf={isSelf}
+                          onSuccess={(updated) => {
+                            setUsers((prev) =>
+                              prev.map((u) =>
+                                u.id === updated.id
+                                  ? {
+                                      ...u,
+                                      name: updated.name,
+                                      email: updated.email,
+                                      phone: updated.phone,
+                                      role: updated.role,
+                                      status: updated.status,
+                                    }
+                                  : u,
+                              ),
+                            );
+                          }}
+                        />
+
+                        {/* 2. Suspend / Activate Toggle */}
+                        {!isSelf && user.role !== "SUPER_ADMIN" && (
+                          <Button
+                            size="sm"
+                            variant={
+                              user.status === "ACTIVE" ? "outline" : "default"
+                            }
+                            disabled={isStatusLoading}
+                            onClick={() =>
+                              handleToggleStatus(user.id, user.status)
+                            }
+                            className={`text-xs h-8 px-2.5 ${
+                              user.status === "ACTIVE"
+                                ? "text-amber-600 hover:bg-amber-50 border-amber-200 dark:hover:bg-amber-950/40"
+                                : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                            }`}
+                            title={
+                              user.status === "ACTIVE"
+                                ? "Suspend Account"
+                                : "Activate Account"
+                            }
+                          >
+                            {isStatusLoading ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : user.status === "ACTIVE" ? (
+                              <>
+                                <AlertTriangle className="w-3.5 h-3.5 mr-1" />
+                                Suspend
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle className="w-3.5 h-3.5 mr-1" />
+                                Activate
+                              </>
+                            )}
+                          </Button>
+                        )}
+
+                        {/* 3. Delete User Dialog */}
+                        {!isSelf && (
+                          <DeleteUserDialog
+                            user={{
+                              id: user.id,
+                              email: user.email,
+                              name: user.name,
+                              role: user.role,
+                            }}
+                            isSelf={isSelf}
+                            onSuccess={(deletedId) => {
+                              setUsers((prev) =>
+                                prev.filter((u) => u.id !== deletedId),
+                              );
+                            }}
+                          />
+                        )}
+
+                        {isSelf && (
+                          <span className="text-xs text-slate-400 font-mono italic px-2">
+                            (Current Session)
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
