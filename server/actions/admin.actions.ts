@@ -297,7 +297,7 @@ export async function moderateJobAction(
 // 4. USER GOVERNANCE (SUPER ADMIN ONLY)
 // ==========================================
 
-export const MAX_SUPER_ADMINS = 2;
+const MAX_SUPER_ADMINS = 2;
 
 export async function toggleUserStatusAction(userId: string, newStatus: UserStatus) {
   const admin = await requireRoleUser(["SUPER_ADMIN"]);
