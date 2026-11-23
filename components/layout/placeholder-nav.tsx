@@ -23,7 +23,7 @@ export function PlaceholderNav({ name, role }: PlaceholderNavProps) {
               alt={siteConfig.name}
               width={30}
               height={30}
-              className="h-7 w-7 object-contain rounded"
+              className="h-7 w-7 shrink-0 object-contain rounded"
             />
             <span className="text-xl font-bold text-primary">
               {siteConfig.name}

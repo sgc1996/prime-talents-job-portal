@@ -26,7 +26,7 @@ export function PublicFooter() {
                 alt={siteConfig.name}
                 width={34}
                 height={34}
-                className="h-8 w-8 object-contain rounded"
+                className="h-8 w-8 shrink-0 object-contain rounded"
               />
               <span className="text-2xl font-bold tracking-tight text-primary">
                 {siteConfig.name}

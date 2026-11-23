@@ -41,7 +41,7 @@ export async function PublicHeader() {
               alt={siteConfig.name}
               width={34}
               height={34}
-              className="h-8 w-8 object-contain rounded transition-transform group-hover:scale-105"
+              className="h-8 w-8 shrink-0 object-contain rounded transition-transform group-hover:scale-105"
               priority
             />
             <div className="flex items-center space-x-1.5">

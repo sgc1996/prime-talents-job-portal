@@ -12,7 +12,7 @@ export function AuthHeader() {
             alt={siteConfig.name}
             width={34}
             height={34}
-            className="h-8 w-8 object-contain rounded"
+            className="h-8 w-8 shrink-0 object-contain rounded"
             priority
           />
           <div className="flex items-center space-x-1.5">

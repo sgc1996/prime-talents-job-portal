@@ -103,7 +103,7 @@ export function AdminSidebar({ user, counts }: AdminSidebarProps) {
             alt="Prime Hire"
             width={36}
             height={36}
-            className="w-9 h-9 object-contain rounded-lg"
+            className="w-9 h-9 shrink-0 object-contain rounded-lg"
           />
           <div>
             <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white block">

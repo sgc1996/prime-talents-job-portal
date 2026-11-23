@@ -27,7 +27,7 @@ export default async function HomePage() {
             </span>
 
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl text-foreground">
-              Find Your Next Career Opportunity in <span className="text-primary">{siteConfig.name}</span>
+              Find Your Next Career Opportunity with <span className="text-primary">{siteConfig.name}</span>
             </h1>
 
             <p className="text-base text-muted-foreground sm:text-lg">
