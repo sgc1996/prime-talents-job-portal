@@ -5,15 +5,29 @@ import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/auth/session";
 import { Briefcase, User, LogIn, LayoutDashboard } from "lucide-react";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { SystemSettingsRepository } from "@/server/repositories/system-settings.repository";
 
 export async function PublicHeader() {
   const user = await getCurrentUser();
+  const allowEmployerReg = await SystemSettingsRepository.isPublicEmployerRegistrationEnabled();
 
   const getDashboardLink = () => {
     if (!user) return "/login";
     if (user.role === "CANDIDATE") return "/candidate";
     if (user.role === "EMPLOYER") return "/employer";
     return "/admin";
+  };
+
+  const showPostJob =
+    user?.role === "EMPLOYER" ||
+    user?.role === "SUPER_ADMIN" ||
+    user?.role === "MODERATOR" ||
+    (!user && allowEmployerReg);
+
+  const getPostJobLink = () => {
+    if (user?.role === "EMPLOYER") return "/employer/jobs/new";
+    if (user?.role === "SUPER_ADMIN" || user?.role === "MODERATOR") return "/admin/jobs/new";
+    return "/register";
   };
 
   return (
@@ -87,9 +101,9 @@ export async function PublicHeader() {
             </div>
           )}
 
-          {/* Post a Job button (shown only to EMPLOYER or guest visitors, NOT candidates) */}
-          {user?.role !== "CANDIDATE" && (
-            <Link href={user?.role === "EMPLOYER" ? "/employer/jobs/new" : "/register"}>
+          {/* Post a Job button */}
+          {showPostJob && (
+            <Link href={getPostJobLink()}>
               <Button size="sm" variant="default" className="hidden sm:flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
                 <Briefcase className="h-4 w-4" />
                 <span>Post a Job</span>

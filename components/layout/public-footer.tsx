@@ -61,20 +61,22 @@ export function PublicFooter() {
             </ul>
           </div>
 
-          {/* Employers */}
+          {/* Employers & Hiring */}
           <div className="space-y-3">
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-              Employers
+              Employers &amp; Hiring
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/register" className="hover:text-foreground">Post a Job Opening</Link>
+                <Link href="/pricing" className="hover:text-foreground">Featured Vacancy Packages</Link>
               </li>
               <li>
-                <Link href="/employer" className="hover:text-foreground">Applicant Tracking System (ATS)</Link>
+                <a href={`mailto:${siteConfig.supportEmail}?subject=Hire%20Talent%20Inquiry`} className="hover:text-foreground">
+                  Recruit With Prime Hire
+                </a>
               </li>
               <li>
-                <Link href="/employer/profile" className="hover:text-foreground">Company Branding</Link>
+                <Link href="/login" className="hover:text-foreground">Staff &amp; Employer Sign In</Link>
               </li>
             </ul>
           </div>

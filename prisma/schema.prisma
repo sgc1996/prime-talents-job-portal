@@ -784,3 +784,16 @@ model AuditLog {
   @@index([entityType, entityId])
 }
 
+// ==========================================
+// SYSTEM SETTINGS & CONFIGURATION
+// ==========================================
+
+model SystemSetting {
+  key         String   @id
+  value       String   @db.Text
+  description String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+

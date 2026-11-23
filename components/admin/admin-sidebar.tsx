@@ -17,6 +17,7 @@ import {
   Globe,
   LogOut,
   ChevronRight,
+  Sliders,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -80,6 +81,12 @@ export function AdminSidebar({ user, counts }: AdminSidebarProps) {
             name: "Audit Trail",
             href: "/admin/audit-logs",
             icon: ShieldCheck,
+            badge: null,
+          },
+          {
+            name: "Platform Settings",
+            href: "/admin/settings",
+            icon: Sliders,
             badge: null,
           },
         ]

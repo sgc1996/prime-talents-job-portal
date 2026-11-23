@@ -53,7 +53,7 @@ export function AdminJobPostForm({
   // Company affiliation
   const [companyMode, setCompanyMode] = useState<"EXISTING" | "DIRECT">("DIRECT");
   const [employerId, setEmployerId] = useState("");
-  const [companyNameIfDirect, setCompanyNameIfDirect] = useState("");
+  const [companyNameIfDirect, setCompanyNameIfDirect] = useState("Prime Hire");
 
   // Poster Image Upload
   const [posterUrl, setPosterUrl] = useState<string>("");
@@ -229,7 +229,7 @@ export function AdminJobPostForm({
               <Input
                 id="companyNameIfDirect"
                 required
-                placeholder="e.g. Commercial Bank of Ceylon PLC / Dialog Axiata / MAS"
+                placeholder="Prime Hire (or client company name)"
                 value={companyNameIfDirect}
                 onChange={(e) => setCompanyNameIfDirect(e.target.value)}
               />

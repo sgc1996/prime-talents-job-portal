@@ -10,6 +10,7 @@ import {
 import { AuthService } from "@/server/services/auth.service";
 import { VerificationService } from "@/server/services/verification.service";
 import { UserRepository } from "@/server/repositories/user.repository";
+import { SystemSettingsRepository } from "@/server/repositories/system-settings.repository";
 import { checkRateLimit } from "@/lib/rate-limit/limiter";
 import { getCaptchaAdapter } from "@/lib/security/captcha-adapter";
 import { signOut } from "@/lib/auth/auth";
@@ -80,6 +81,16 @@ export async function registerCandidateAction(formData: unknown) {
 }
 
 export async function registerEmployerAction(formData: unknown) {
+  const isPublicRegistrationEnabled =
+    await SystemSettingsRepository.isPublicEmployerRegistrationEnabled();
+  if (!isPublicRegistrationEnabled) {
+    return {
+      success: false,
+      error:
+        "Public employer registration is currently closed. Job vacancies are published exclusively in-house by Prime Hire.",
+    };
+  }
+
   const ip = getClientIp();
   const rateLimit = checkRateLimit(`register:${ip}`, 10, 600);
   if (!rateLimit.success) {
