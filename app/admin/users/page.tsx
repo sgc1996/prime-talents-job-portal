@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminUsersPage() {
-  await requireRoleUser(["SUPER_ADMIN"]);
+  const admin = await requireRoleUser(["SUPER_ADMIN"]);
   const users = await AdminRepository.getUsers({ limit: 100 });
 
   return (
@@ -30,12 +30,12 @@ export default async function AdminUsersPage() {
             User Governance &amp; Security
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Search, inspect account privileges, and toggle activation status for platform users.
+            Search, inspect account privileges, assign roles, and create staff accounts.
           </p>
         </div>
       </div>
 
-      <UserManagementTable initialUsers={users} />
+      <UserManagementTable initialUsers={users} currentAdminId={admin.id} />
     </div>
   );
 }

@@ -11,7 +11,9 @@ import {
   ApplyMethod,
   EmployerVerificationStatus,
   UserStatus,
+  UserRole,
 } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 // ==========================================
 // 1. ADMIN POST VACANCY (WITH IMAGE / FLYER)
@@ -329,5 +331,128 @@ export async function toggleUserStatusAction(userId: string, newStatus: UserStat
 
   revalidatePath(`/admin/users`);
   return { success: true };
+}
+
+// ==========================================
+// 6. UPDATE USER ROLE & CREATE STAFF
+// ==========================================
+
+export async function updateUserRoleAction(userId: string, newRole: UserRole) {
+  const admin = await requireRoleUser(["SUPER_ADMIN"]);
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Prevent self-demotion
+  if (user.id === admin.id && newRole !== "SUPER_ADMIN") {
+    throw new Error("You cannot change or demote your own Super Admin role");
+  }
+
+  // If demoting another Super Admin, ensure at least one other active Super Admin remains
+  if (user.role === "SUPER_ADMIN" && newRole !== "SUPER_ADMIN") {
+    const superAdminCount = await prisma.user.count({
+      where: { role: "SUPER_ADMIN", status: "ACTIVE" },
+    });
+    if (superAdminCount <= 1) {
+      throw new Error("Cannot demote the last remaining Super Admin");
+    }
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { role: newRole },
+  });
+
+  // Audit Log
+  await prisma.auditLog.create({
+    data: {
+      actorId: admin.id,
+      action: "USER_ROLE_CHANGED",
+      entityType: "User",
+      entityId: userId,
+      before: { role: user.role },
+      after: { role: newRole },
+    },
+  });
+
+  revalidatePath(`/admin/users`);
+  return {
+    success: true,
+    message: `Role for ${user.email} updated to ${newRole}`,
+    user: { id: user.id, role: newRole },
+  };
+}
+
+export async function createStaffUserAction(data: {
+  name: string;
+  email: string;
+  role: UserRole;
+  password: string;
+}) {
+  const admin = await requireRoleUser(["SUPER_ADMIN"]);
+
+  const email = data.email.toLowerCase().trim();
+  const name = data.name.trim();
+  const password = data.password.trim();
+
+  if (!name || name.length < 2) {
+    throw new Error("Name must be at least 2 characters");
+  }
+
+  if (!email || !email.includes("@")) {
+    throw new Error("Invalid email address");
+  }
+
+  if (password.length < 8) {
+    throw new Error("Password must be at least 8 characters");
+  }
+
+  if (data.role !== "SUPER_ADMIN" && data.role !== "MODERATOR") {
+    throw new Error("Staff role must be either SUPER_ADMIN or MODERATOR");
+  }
+
+  const existing = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (existing) {
+    throw new Error("A user with this email address already exists");
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  const newUser = await prisma.user.create({
+    data: {
+      name,
+      email,
+      passwordHash,
+      role: data.role,
+      status: "ACTIVE",
+      emailVerifiedAt: new Date(),
+    },
+  });
+
+  // Audit Log
+  await prisma.auditLog.create({
+    data: {
+      actorId: admin.id,
+      action: "STAFF_USER_CREATED",
+      entityType: "User",
+      entityId: newUser.id,
+      after: { role: newUser.role, email: newUser.email },
+    },
+  });
+
+  revalidatePath(`/admin/users`);
+  return {
+    success: true,
+    message: `Staff user created successfully: ${newUser.email} (${newUser.role})`,
+    user: { id: newUser.id, email: newUser.email, role: newUser.role },
+  };
 }
 

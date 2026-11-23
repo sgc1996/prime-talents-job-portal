@@ -2,7 +2,10 @@
 
 import * as React from "react";
 import { useState } from "react";
-import { toggleUserStatusAction } from "@/server/actions/admin.actions";
+import {
+  toggleUserStatusAction,
+  updateUserRoleAction,
+} from "@/server/actions/admin.actions";
 import { UserRole, UserStatus } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +17,10 @@ import {
   AlertTriangle,
   Loader2,
   Calendar,
+  Shield,
+  ShieldAlert,
 } from "lucide-react";
+import { AddStaffDialog } from "./add-staff-dialog";
 
 interface UserRow {
   id: string;
@@ -33,14 +39,19 @@ interface UserRow {
 
 interface UserManagementTableProps {
   initialUsers: UserRow[];
+  currentAdminId?: string;
 }
 
-export function UserManagementTable({ initialUsers }: UserManagementTableProps) {
+export function UserManagementTable({
+  initialUsers,
+  currentAdminId,
+}: UserManagementTableProps) {
   const [users, setUsers] = useState<UserRow[]>(initialUsers);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [loadingStatusId, setLoadingStatusId] = useState<string | null>(null);
+  const [loadingRoleId, setLoadingRoleId] = useState<string | null>(null);
 
   const filteredUsers = users.filter((u) => {
     if (roleFilter !== "ALL" && u.role !== roleFilter) return false;
@@ -49,16 +60,20 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
       const q = search.toLowerCase();
       const matchEmail = u.email.toLowerCase().includes(q);
       const matchName = u.name?.toLowerCase().includes(q) || false;
-      const matchCompany = u.employerProfile?.companyName.toLowerCase().includes(q) || false;
+      const matchCompany =
+        u.employerProfile?.companyName.toLowerCase().includes(q) || false;
       if (!matchEmail && !matchName && !matchCompany) return false;
     }
     return true;
   });
 
-  const handleToggleStatus = async (userId: string, currentStatus: UserStatus) => {
+  const handleToggleStatus = async (
+    userId: string,
+    currentStatus: UserStatus,
+  ) => {
     const nextStatus = currentStatus === "ACTIVE" ? "SUSPENDED" : "ACTIVE";
     try {
-      setLoadingId(userId);
+      setLoadingStatusId(userId);
       await toggleUserStatusAction(userId, nextStatus);
       setUsers((prev) =>
         prev.map((u) => (u.id === userId ? { ...u, status: nextStatus } : u)),
@@ -67,29 +82,31 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
     } catch (err: any) {
       toast.error(err.message || "Failed to update user status");
     } finally {
-      setLoadingId(null);
+      setLoadingStatusId(null);
     }
   };
 
-  const getRoleBadge = (role: UserRole) => {
-    switch (role) {
-      case "SUPER_ADMIN":
-        return <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">Super Admin</Badge>;
-      case "MODERATOR":
-        return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">Moderator</Badge>;
-      case "EMPLOYER":
-        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">Employer</Badge>;
-      case "CANDIDATE":
-        return <Badge variant="secondary">Candidate</Badge>;
-      default:
-        return <Badge variant="outline">{role}</Badge>;
+  const handleRoleChange = async (userId: string, newRole: UserRole) => {
+    try {
+      setLoadingRoleId(userId);
+      const result = await updateUserRoleAction(userId, newRole);
+      if (result.success) {
+        setUsers((prev) =>
+          prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)),
+        );
+        toast.success(result.message);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update user role");
+    } finally {
+      setLoadingRoleId(null);
     }
   };
 
   return (
     <div className="space-y-4">
-      {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl">
+      {/* Search, Filters, and Add Staff Action */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl">
         <div className="relative flex-1 max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <Input
@@ -100,11 +117,11 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs"
+            className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs focus:ring-1 focus:ring-primary"
           >
             <option value="ALL">All Roles</option>
             <option value="SUPER_ADMIN">Super Admins</option>
@@ -116,13 +133,19 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs"
+            className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs focus:ring-1 focus:ring-primary"
           >
             <option value="ALL">All Statuses</option>
             <option value="ACTIVE">Active</option>
             <option value="SUSPENDED">Suspended</option>
             <option value="PENDING_VERIFICATION">Pending Verification</option>
           </select>
+
+          <AddStaffDialog
+            onSuccess={() => {
+              window.location.reload();
+            }}
+          />
         </div>
       </div>
 
@@ -133,7 +156,7 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
             <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
               <tr>
                 <th className="px-6 py-4">User Details</th>
-                <th className="px-6 py-4">Role</th>
+                <th className="px-6 py-4">Assigned Role</th>
                 <th className="px-6 py-4">Account Status</th>
                 <th className="px-6 py-4">Registered Date</th>
                 <th className="px-6 py-4 text-right">Governance Action</th>
@@ -141,15 +164,30 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {filteredUsers.map((user) => {
-                const isLoading = loadingId === user.id;
+                const isStatusLoading = loadingStatusId === user.id;
+                const isRoleLoading = loadingRoleId === user.id;
+                const isSelf = user.id === currentAdminId;
 
                 return (
-                  <tr key={user.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition">
+                  <tr
+                    key={user.id}
+                    className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition"
+                  >
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-slate-900 dark:text-white">
-                        {user.name || "Anonymous User"}
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-slate-900 dark:text-white">
+                          {user.name || "Anonymous User"}
+                        </span>
+                        {user.role === "SUPER_ADMIN" && (
+                          <ShieldAlert className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                        )}
+                        {user.role === "MODERATOR" && (
+                          <Shield className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                        )}
                       </div>
-                      <p className="text-xs text-slate-500 font-mono mt-0.5">{user.email}</p>
+                      <p className="text-xs text-slate-500 font-mono mt-0.5">
+                        {user.email}
+                      </p>
                       {user.employerProfile && (
                         <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">
                           Company: {user.employerProfile.companyName}
@@ -157,7 +195,48 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
                       )}
                     </td>
 
-                    <td className="px-6 py-4">{getRoleBadge(user.role)}</td>
+                    <td className="px-6 py-4">
+                      {isSelf ? (
+                        <div className="flex items-center gap-1.5">
+                          <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20 text-xs font-semibold">
+                            Super Admin
+                          </Badge>
+                          <span className="text-[10px] text-slate-400 font-mono italic">
+                            (Your Account)
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <select
+                            value={user.role}
+                            disabled={isRoleLoading}
+                            onChange={(e) =>
+                              handleRoleChange(
+                                user.id,
+                                e.target.value as UserRole,
+                              )
+                            }
+                            className={`rounded-lg border px-2.5 py-1 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary ${
+                              user.role === "SUPER_ADMIN"
+                                ? "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800"
+                                : user.role === "MODERATOR"
+                                  ? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800"
+                                  : user.role === "EMPLOYER"
+                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800"
+                                    : "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+                            }`}
+                          >
+                            <option value="CANDIDATE">Candidate (Job Seeker)</option>
+                            <option value="MODERATOR">Moderator (Staff)</option>
+                            <option value="SUPER_ADMIN">Super Admin</option>
+                            <option value="EMPLOYER">Employer</option>
+                          </select>
+                          {isRoleLoading && (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+                          )}
+                        </div>
+                      )}
+                    </td>
 
                     <td className="px-6 py-4">
                       {user.status === "ACTIVE" ? (
@@ -169,7 +248,10 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
                           Suspended
                         </Badge>
                       ) : (
-                        <Badge variant="outline" className="text-xs text-amber-600 border-amber-500/30">
+                        <Badge
+                          variant="outline"
+                          className="text-xs text-amber-600 border-amber-500/30"
+                        >
                           {user.status}
                         </Badge>
                       )}
@@ -179,29 +261,36 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5 text-slate-400" />
                         <span>
-                          {new Date(user.createdAt).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
+                          {new Date(user.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            },
+                          )}
                         </span>
                       </div>
                     </td>
 
                     <td className="px-6 py-4 text-right">
-                      {user.role !== "SUPER_ADMIN" ? (
+                      {!isSelf && user.role !== "SUPER_ADMIN" ? (
                         <Button
                           size="sm"
-                          variant={user.status === "ACTIVE" ? "outline" : "default"}
-                          disabled={isLoading}
-                          onClick={() => handleToggleStatus(user.id, user.status)}
+                          variant={
+                            user.status === "ACTIVE" ? "outline" : "default"
+                          }
+                          disabled={isStatusLoading}
+                          onClick={() =>
+                            handleToggleStatus(user.id, user.status)
+                          }
                           className={`text-xs h-8 px-3 ${
                             user.status === "ACTIVE"
-                              ? "text-rose-600 hover:bg-rose-50 border-rose-200"
+                              ? "text-rose-600 hover:bg-rose-50 border-rose-200 dark:hover:bg-rose-950/40"
                               : "bg-emerald-600 hover:bg-emerald-700 text-white"
                           }`}
                         >
-                          {isLoading ? (
+                          {isStatusLoading ? (
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />
                           ) : user.status === "ACTIVE" ? (
                             <>
@@ -215,8 +304,14 @@ export function UserManagementTable({ initialUsers }: UserManagementTableProps) 
                             </>
                           )}
                         </Button>
+                      ) : isSelf ? (
+                        <span className="text-xs text-slate-400 font-mono italic">
+                          Current Session
+                        </span>
                       ) : (
-                        <span className="text-xs text-slate-400 font-mono italic">Protected</span>
+                        <span className="text-xs text-purple-600 dark:text-purple-400 font-mono italic">
+                          Super Admin
+                        </span>
                       )}
                     </td>
                   </tr>
