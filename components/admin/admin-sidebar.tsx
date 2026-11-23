@@ -95,29 +95,61 @@ export function AdminSidebar({ user, counts }: AdminSidebarProps) {
   ];
 
   return (
-    <aside className="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col shrink-0 min-h-screen">
+    <aside className="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col shrink-0 sticky top-0 h-screen z-30">
       {/* Brand Header */}
-      <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <Link href="/admin" className="flex items-center gap-2.5">
           <Image
             src="/images/logo.png"
             alt="Prime Hire"
-            width={36}
-            height={36}
-            className="w-9 h-9 shrink-0 object-contain rounded-lg"
+            width={34}
+            height={34}
+            className="w-8 h-8 shrink-0 object-contain rounded-lg"
           />
           <div>
-            <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white block">
+            <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white block leading-tight">
               Prime Hire
             </span>
-            <span className="text-[10px] uppercase font-semibold tracking-wider text-emerald-600 dark:text-emerald-400 block -mt-0.5">
+            <span className="text-[10px] uppercase font-semibold tracking-wider text-emerald-600 dark:text-emerald-400 block">
               Control Panel
             </span>
           </div>
         </Link>
       </div>
 
-      {/* Navigation Links */}
+      {/* User Info & Quick Logout Bar (Placed Right Under Logo) */}
+      <div className="p-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
+        <div className="flex items-center justify-between gap-2 p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+          <Link
+            href="/admin/profile"
+            className="flex items-center gap-2 min-w-0 flex-1 group"
+            title="Manage Profile & Password"
+          >
+            <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+              {user.name ? user.name.slice(0, 2).toUpperCase() : "AD"}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-primary transition-colors">
+                {user.name || "Administrator"}
+              </p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate -mt-0.5 font-medium">
+                {user.role}
+              </p>
+            </div>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition shrink-0"
+            title="Log Out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Navigation Links (Scrollable area) */}
       <nav className="p-3 space-y-1 flex-1 overflow-y-auto">
         <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
           Administration
@@ -195,34 +227,9 @@ export function AdminSidebar({ user, counts }: AdminSidebarProps) {
         </Link>
       </nav>
 
-      {/* User Footer & Logout */}
-      <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-        <div className="flex items-center justify-between">
-          <Link href="/admin/profile" className="truncate mr-2 group flex-1" title="Manage Profile">
-            <p className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-primary transition-colors">
-              {user.name || "Administrator"}
-            </p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-              {user.role}
-            </p>
-          </Link>
-          <div className="flex items-center gap-1">
-            <Link
-              href="/admin/profile"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-              title="Profile & Password"
-            >
-              <UserCircle className="w-4 h-4" />
-            </Link>
-            <button
-              onClick={() => signOut({ callbackUrl: "/login" })}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition"
-              title="Log Out"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+      {/* Bottom Status */}
+      <div className="p-3 border-t border-slate-200 dark:border-slate-800 text-center text-[10px] text-slate-400">
+        Prime Hire • Admin Panel
       </div>
     </aside>
   );
