@@ -55,6 +55,9 @@ export function UserManagementTable({
   const [loadingStatusId, setLoadingStatusId] = useState<string | null>(null);
   const [loadingRoleId, setLoadingRoleId] = useState<string | null>(null);
 
+  const superAdminCount = users.filter((u) => u.role === "SUPER_ADMIN").length;
+  const canAddMoreSuperAdmins = superAdminCount < 2;
+
   const filteredUsers = users.filter((u) => {
     if (roleFilter !== "ALL" && u.role !== roleFilter) return false;
     if (statusFilter !== "ALL" && u.status !== statusFilter) return false;
@@ -120,6 +123,13 @@ export function UserManagementTable({
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-200 dark:border-purple-800/80 bg-purple-50/70 dark:bg-purple-950/30 text-xs font-semibold text-purple-700 dark:text-purple-300">
+            <ShieldAlert className="w-3.5 h-3.5" />
+            <span>
+              Super Admins: <strong>{superAdminCount} / 2</strong>
+            </span>
+          </div>
+
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
@@ -144,6 +154,7 @@ export function UserManagementTable({
           </select>
 
           <AddStaffDialog
+            canCreateSuperAdmin={canAddMoreSuperAdmins}
             onSuccess={() => {
               window.location.reload();
             }}
@@ -235,7 +246,18 @@ export function UserManagementTable({
                           >
                             <option value="CANDIDATE">Candidate (Job Seeker)</option>
                             <option value="MODERATOR">Moderator (Staff)</option>
-                            <option value="SUPER_ADMIN">Super Admin</option>
+                            <option
+                              value="SUPER_ADMIN"
+                              disabled={
+                                !canAddMoreSuperAdmins &&
+                                user.role !== "SUPER_ADMIN"
+                              }
+                            >
+                              {!canAddMoreSuperAdmins &&
+                              user.role !== "SUPER_ADMIN"
+                                ? "Super Admin (Max 2 reached)"
+                                : "Super Admin"}
+                            </option>
                             <option value="EMPLOYER">Employer</option>
                           </select>
                           {isRoleLoading && (
@@ -293,6 +315,7 @@ export function UserManagementTable({
                             status: user.status,
                           }}
                           isSelf={isSelf}
+                          canPromoteToSuperAdmin={canAddMoreSuperAdmins}
                           onSuccess={(updated) => {
                             setUsers((prev) =>
                               prev.map((u) =>

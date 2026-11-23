@@ -297,6 +297,8 @@ export async function moderateJobAction(
 // 4. USER GOVERNANCE (SUPER ADMIN ONLY)
 // ==========================================
 
+export const MAX_SUPER_ADMINS = 2;
+
 export async function toggleUserStatusAction(userId: string, newStatus: UserStatus) {
   const admin = await requireRoleUser(["SUPER_ADMIN"]);
 
@@ -351,6 +353,18 @@ export async function updateUserRoleAction(userId: string, newRole: UserRole) {
   // Prevent self-demotion
   if (user.id === admin.id && newRole !== "SUPER_ADMIN") {
     throw new Error("You cannot change or demote your own Super Admin role");
+  }
+
+  // Enforce Max Super Admins Limit
+  if (newRole === "SUPER_ADMIN" && user.role !== "SUPER_ADMIN") {
+    const superAdminCount = await prisma.user.count({
+      where: { role: "SUPER_ADMIN" },
+    });
+    if (superAdminCount >= MAX_SUPER_ADMINS) {
+      throw new Error(
+        `Security Policy: Maximum of ${MAX_SUPER_ADMINS} Super Admin accounts allowed. Please demote or delete an existing Super Admin first.`,
+      );
+    }
   }
 
   // If demoting another Super Admin, ensure at least one other active Super Admin remains
@@ -414,6 +428,18 @@ export async function createStaffUserAction(data: {
 
   if (data.role !== "SUPER_ADMIN" && data.role !== "MODERATOR") {
     throw new Error("Staff role must be either SUPER_ADMIN or MODERATOR");
+  }
+
+  // Enforce Max Super Admins Limit
+  if (data.role === "SUPER_ADMIN") {
+    const superAdminCount = await prisma.user.count({
+      where: { role: "SUPER_ADMIN" },
+    });
+    if (superAdminCount >= MAX_SUPER_ADMINS) {
+      throw new Error(
+        `Security Policy: Maximum of ${MAX_SUPER_ADMINS} Super Admin accounts allowed. Please demote or delete an existing Super Admin first.`,
+      );
+    }
   }
 
   const existing = await prisma.user.findUnique({
@@ -498,6 +524,18 @@ export async function updateUserDetailsAdminAction(data: {
     }
     if (data.status !== "ACTIVE") {
       throw new Error("You cannot suspend your own Super Admin account");
+    }
+  }
+
+  // Enforce Max Super Admins Limit when promoting a user to SUPER_ADMIN
+  if (data.role === "SUPER_ADMIN" && user.role !== "SUPER_ADMIN") {
+    const superAdminCount = await prisma.user.count({
+      where: { role: "SUPER_ADMIN" },
+    });
+    if (superAdminCount >= MAX_SUPER_ADMINS) {
+      throw new Error(
+        `Security Policy: Maximum of ${MAX_SUPER_ADMINS} Super Admin accounts allowed. Please demote or delete an existing Super Admin first.`,
+      );
     }
   }
 

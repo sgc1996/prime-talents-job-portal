@@ -31,10 +31,16 @@ interface EditUserTarget {
 interface EditUserDialogProps {
   user: EditUserTarget;
   isSelf: boolean;
+  canPromoteToSuperAdmin?: boolean;
   onSuccess: (updatedUser: EditUserTarget) => void;
 }
 
-export function EditUserDialog({ user, isSelf, onSuccess }: EditUserDialogProps) {
+export function EditUserDialog({
+  user,
+  isSelf,
+  canPromoteToSuperAdmin = true,
+  onSuccess,
+}: EditUserDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(user.name || "");
   const [email, setEmail] = useState(user.email);
@@ -202,7 +208,14 @@ export function EditUserDialog({ user, isSelf, onSuccess }: EditUserDialogProps)
                     <option value="CANDIDATE">Candidate (Job Seeker)</option>
                     <option value="EMPLOYER">Employer / Company</option>
                     <option value="MODERATOR">Moderator (Staff)</option>
-                    <option value="SUPER_ADMIN">Super Admin</option>
+                    <option
+                      value="SUPER_ADMIN"
+                      disabled={!canPromoteToSuperAdmin && user.role !== "SUPER_ADMIN"}
+                    >
+                      {!canPromoteToSuperAdmin && user.role !== "SUPER_ADMIN"
+                        ? "Super Admin (Limit Reached: Max 2/2)"
+                        : "Super Admin"}
+                    </option>
                   </select>
                   {isSelf && (
                     <p className="text-[10px] text-slate-400 italic">

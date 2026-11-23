@@ -11,9 +11,13 @@ import { UserPlus, Loader2, Key, Shield, UserCheck, X } from "lucide-react";
 
 interface AddStaffDialogProps {
   onSuccess?: () => void;
+  canCreateSuperAdmin?: boolean;
 }
 
-export function AddStaffDialog({ onSuccess }: AddStaffDialogProps) {
+export function AddStaffDialog({
+  onSuccess,
+  canCreateSuperAdmin = true,
+}: AddStaffDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -138,8 +142,10 @@ export function AddStaffDialog({ onSuccess }: AddStaffDialogProps) {
                   <option value="MODERATOR">
                     Moderator (Review vacancies, post direct jobs, verify slips)
                   </option>
-                  <option value="SUPER_ADMIN">
-                    Super Admin (Full system control, settings, user management)
+                  <option value="SUPER_ADMIN" disabled={!canCreateSuperAdmin}>
+                    {canCreateSuperAdmin
+                      ? "Super Admin (Full system control, settings, user management)"
+                      : "Super Admin (Security Cap Reached: Max 2/2)"}
                   </option>
                 </select>
               </div>
