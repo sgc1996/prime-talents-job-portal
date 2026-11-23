@@ -527,6 +527,23 @@ export async function updateUserDetailsAdminAction(data: {
     }
   }
 
+  // Enforce Domain Separation: Public accounts (Candidate / Employer) cannot become Staff (Moderator / Super Admin)
+  const isCurrentPublic = user.role === "CANDIDATE" || user.role === "EMPLOYER";
+  const isTargetStaff = data.role === "MODERATOR" || data.role === "SUPER_ADMIN";
+  if (isCurrentPublic && isTargetStaff) {
+    throw new Error(
+      "Security Policy: Public accounts (Candidates & Employers) cannot be converted into Staff / Admin roles. Please use 'Add Staff / Admin' to create dedicated staff accounts.",
+    );
+  }
+
+  const isCurrentStaff = user.role === "MODERATOR" || user.role === "SUPER_ADMIN";
+  const isTargetPublic = data.role === "CANDIDATE" || data.role === "EMPLOYER";
+  if (isCurrentStaff && isTargetPublic) {
+    throw new Error(
+      "Security Policy: Internal Staff accounts cannot be converted into public Candidate or Employer accounts.",
+    );
+  }
+
   // Enforce Max Super Admins Limit when promoting a user to SUPER_ADMIN
   if (data.role === "SUPER_ADMIN" && user.role !== "SUPER_ADMIN") {
     const superAdminCount = await prisma.user.count({

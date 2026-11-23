@@ -17,7 +17,6 @@ import {
   Phone,
   Mail,
   User,
-  AlertTriangle,
 } from "lucide-react";
 
 interface EditUserTarget {
@@ -200,36 +199,53 @@ export function EditUserDialog({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-semibold">User Role</Label>
-                  <select
-                    value={role}
-                    disabled={isSelf}
-                    onChange={(e) => setRole(e.target.value as UserRole)}
-                    className="w-full rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
-                  >
-                    <option value="CANDIDATE">Candidate (Job Seeker)</option>
-                    <option value="EMPLOYER">Employer / Company</option>
-                    <option value="MODERATOR">Moderator (Staff)</option>
-                    <option
-                      value="SUPER_ADMIN"
-                      disabled={!canPromoteToSuperAdmin && user.role !== "SUPER_ADMIN"}
-                    >
-                      {!canPromoteToSuperAdmin && user.role !== "SUPER_ADMIN"
-                        ? "Super Admin (Limit Reached: Max 2/2)"
-                        : "Super Admin"}
-                    </option>
-                  </select>
-                  {isSelf && (
-                    <p className="text-[10px] text-slate-400 italic">
-                      Cannot change role on your own account
-                    </p>
-                  )}
-                  {(role === "SUPER_ADMIN" || role === "MODERATOR") &&
-                    (user.role === "CANDIDATE" || user.role === "EMPLOYER") && (
-                      <p className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
-                        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-                        Warning: This will grant internal staff access.
+                  {user.role === "CANDIDATE" || user.role === "EMPLOYER" ? (
+                    <>
+                      <select
+                        value={role}
+                        onChange={(e) => setRole(e.target.value as UserRole)}
+                        className="w-full rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value="CANDIDATE">Candidate (Job Seeker)</option>
+                        <option value="EMPLOYER">Employer / Company</option>
+                      </select>
+                      <p className="text-[10px] text-slate-400 italic">
+                        Public Account (Staff roles restricted by security policy)
                       </p>
-                    )}
+                    </>
+                  ) : (
+                    <>
+                      <select
+                        value={role}
+                        disabled={isSelf}
+                        onChange={(e) => setRole(e.target.value as UserRole)}
+                        className="w-full rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+                      >
+                        <option value="MODERATOR">Moderator (Staff)</option>
+                        <option
+                          value="SUPER_ADMIN"
+                          disabled={
+                            !canPromoteToSuperAdmin &&
+                            user.role !== "SUPER_ADMIN"
+                          }
+                        >
+                          {!canPromoteToSuperAdmin &&
+                          user.role !== "SUPER_ADMIN"
+                            ? "Super Admin (Limit Reached: Max 2/2)"
+                            : "Super Admin"}
+                        </option>
+                      </select>
+                      {isSelf ? (
+                        <p className="text-[10px] text-slate-400 italic">
+                          Cannot change role on your own account
+                        </p>
+                      ) : (
+                        <p className="text-[10px] text-slate-400 italic">
+                          Internal Staff Account
+                        </p>
+                      )}
+                    </>
+                  )}
                 </div>
 
                 <div className="space-y-1.5">
