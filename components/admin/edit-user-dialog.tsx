@@ -291,7 +291,7 @@ export function EditUserDialog({
                   className="text-sm font-mono"
                 />
                 <p className="text-[11px] text-slate-400">
-                  If filled, the user's password will be directly updated immediately.
+                  If filled, the user&apos;s password will be directly updated immediately.
                 </p>
               </div>
 
