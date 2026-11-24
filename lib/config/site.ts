@@ -8,7 +8,7 @@ export const siteConfig = {
   description:
     "Connecting Sri Lankan talent with top employers across all 9 provinces and 25 districts.",
   url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@primehire.lk",
+  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "info@primetalentssolutions.lk",
   logo: "/images/logo.png",
   favicon: "/favicon.ico",
   links: {

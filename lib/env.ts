@@ -4,7 +4,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   NEXT_PUBLIC_APP_NAME: z.string().default("Prime Hire"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
-  NEXT_PUBLIC_SUPPORT_EMAIL: z.string().email().default("support@primehire.lk"),
+  NEXT_PUBLIC_SUPPORT_EMAIL: z.string().email().default("info@primetalentssolutions.lk"),
 
   // Database
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),

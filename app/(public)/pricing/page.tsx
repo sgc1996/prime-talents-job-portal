@@ -57,7 +57,7 @@ const TIERS = [
       "Custom invoice / PO support",
     ],
     cta: "Contact Enterprise",
-    href: "mailto:support@primehire.lk?subject=Enterprise%20Pro%20Inquiry",
+    href: "mailto:info@primetalentssolutions.lk?subject=Enterprise%20Pro%20Inquiry",
     highlight: false,
   },
 ];

@@ -88,7 +88,12 @@ export function PublicFooter() {
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <span className="text-xs">Support: {siteConfig.supportEmail}</span>
+                <a
+                  href={`mailto:${siteConfig.supportEmail}`}
+                  className="text-xs hover:text-foreground"
+                >
+                  Support: {siteConfig.supportEmail}
+                </a>
               </li>
               <li>
                 <Link href="/login" className="hover:text-foreground">Sign In</Link>
