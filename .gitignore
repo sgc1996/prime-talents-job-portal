@@ -15,8 +15,9 @@
 # production
 /build
 
-# misc
-.DS_Store
+# uploads
+/public/uploads/*
+!/public/uploads/.gitkeep
 *.pem
 
 # debug logs

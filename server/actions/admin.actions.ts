@@ -12,6 +12,7 @@ import {
   EmployerVerificationStatus,
   UserStatus,
   UserRole,
+  ApplicationStatus,
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -698,5 +699,61 @@ export async function deleteUserAdminAction(userId: string) {
     message: `User account (${user.email}) permanently deleted`,
   };
 }
+
+// ==========================================
+// 10. ADMIN CANDIDATE APPLICATION STATUS
+// ==========================================
+
+export async function updateAdminApplicationStatusAction(
+  applicationId: string,
+  newStatus: ApplicationStatus,
+  note?: string,
+) {
+  const admin = await requireRoleUser(["SUPER_ADMIN", "MODERATOR"]);
+
+  const application = await prisma.application.findUnique({
+    where: { id: applicationId },
+    include: {
+      candidate: {
+        include: { user: true },
+      },
+      job: true,
+    },
+  });
+
+  if (!application) {
+    throw new Error("Application not found");
+  }
+
+  await prisma.application.update({
+    where: { id: applicationId },
+    data: {
+      status: newStatus,
+      employerNote: note !== undefined ? note.trim() : application.employerNote,
+    },
+  });
+
+  // Create audit log
+  await prisma.auditLog.create({
+    data: {
+      actorId: admin.id,
+      action: "APPLICATION_STATUS_UPDATED",
+      entityType: "APPLICATION",
+      entityId: applicationId,
+      after: {
+        previousStatus: application.status,
+        newStatus,
+        candidateName: application.candidate.user.name,
+        candidateEmail: application.candidate.user.email,
+        jobTitle: application.job.title,
+        note,
+      },
+    },
+  });
+
+  revalidatePath("/admin/candidates");
+  return { success: true, message: `Application status updated to ${newStatus}` };
+}
+
 
 

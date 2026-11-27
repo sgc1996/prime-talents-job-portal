@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Sliders,
   UserCircle,
+  GraduationCap,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -44,6 +45,12 @@ export function AdminSidebar({ user, counts }: AdminSidebarProps) {
       name: "Dashboard",
       href: "/admin",
       icon: LayoutDashboard,
+      badge: null,
+    },
+    {
+      name: "Candidates & CVs",
+      href: "/admin/candidates",
+      icon: GraduationCap,
       badge: null,
     },
     {

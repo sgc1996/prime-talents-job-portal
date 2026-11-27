@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
-import { UserRole, UserStatus, JobStatus, EmployerVerificationStatus, OrderStatus } from "@prisma/client";
+import { UserRole, UserStatus, JobStatus, EmployerVerificationStatus, OrderStatus, FileKind } from "@prisma/client";
 
 export class AdminRepository {
   /**
@@ -14,6 +14,7 @@ export class AdminRepository {
       pendingJobsCount,
       pendingEmployersCount,
       pendingSlipsCount,
+      totalApplicationsCount,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({ where: { role: UserRole.CANDIDATE } }),
@@ -29,6 +30,7 @@ export class AdminRepository {
           slipFileId: { not: null },
         },
       }),
+      prisma.application.count(),
     ]);
 
     return {
@@ -39,6 +41,7 @@ export class AdminRepository {
       pendingJobsCount,
       pendingEmployersCount,
       pendingSlipsCount,
+      totalApplicationsCount,
     };
   }
 
@@ -202,6 +205,128 @@ export class AdminRepository {
         },
       },
     });
+  }
+
+  /**
+   * Candidate Talent Pool & CVs for Admin
+   */
+  static async getCandidates(options?: {
+    search?: string;
+    districtId?: string;
+    limit?: number;
+  }) {
+    const where: any = {
+      role: UserRole.CANDIDATE,
+    };
+
+    if (options?.search) {
+      const search = options.search.trim();
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+        { phone: { contains: search, mode: "insensitive" } },
+        {
+          candidateProfile: {
+            OR: [
+              { headline: { contains: search, mode: "insensitive" } },
+              { summary: { contains: search, mode: "insensitive" } },
+            ],
+          },
+        },
+      ];
+    }
+
+    if (options?.districtId && options.districtId !== "ALL") {
+      where.candidateProfile = {
+        ...where.candidateProfile,
+        districtId: options.districtId,
+      };
+    }
+
+    const users = await prisma.user.findMany({
+      where,
+      include: {
+        candidateProfile: {
+          include: {
+            district: {
+              include: {
+                province: true,
+              },
+            },
+            applications: {
+              include: {
+                job: {
+                  select: {
+                    id: true,
+                    title: true,
+                    slug: true,
+                    jobType: true,
+                    city: true,
+                    employer: {
+                      select: {
+                        companyName: true,
+                      },
+                    },
+                  },
+                },
+              },
+              orderBy: { createdAt: "desc" },
+            },
+          },
+        },
+        storedFiles: {
+          where: { kind: FileKind.CV },
+          orderBy: { createdAt: "desc" },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: options?.limit || 100,
+    });
+
+    return users.map((u) => {
+      const latestCv = u.storedFiles[0] || null;
+      return {
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        phone: u.phone || u.candidateProfile?.phone || null,
+        status: u.status,
+        createdAt: u.createdAt,
+        candidateProfile: u.candidateProfile,
+        latestCv: latestCv
+          ? {
+              id: latestCv.id,
+              url: latestCv.url,
+              mimeType: latestCv.mimeType,
+              sizeBytes: latestCv.sizeBytes,
+              createdAt: latestCv.createdAt,
+            }
+          : null,
+      };
+    });
+  }
+
+  /**
+   * Summary metrics specifically for Candidates & CVs
+   */
+  static async getCandidateStats() {
+    const [totalCandidates, totalApplications, openToWorkCount, cvOwners] = await Promise.all([
+      prisma.user.count({ where: { role: UserRole.CANDIDATE } }),
+      prisma.application.count(),
+      prisma.candidateProfile.count({ where: { openToWork: true } }),
+      prisma.storedFile.findMany({
+        where: { kind: FileKind.CV },
+        select: { ownerId: true },
+        distinct: ["ownerId"],
+      }),
+    ]);
+
+    return {
+      totalCandidates,
+      totalApplications,
+      openToWorkCount,
+      candidatesWithCvCount: cvOwners.length,
+    };
   }
 }
 
