@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, MapPin, Briefcase } from "lucide-react";
+import { Search, MapPin, Briefcase, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface JobSearchBarProps {
@@ -58,46 +58,49 @@ export function JobSearchBar({
 
         {/* District dropdown */}
         <div className="relative md:col-span-3 flex items-center">
-          <MapPin className="absolute left-3.5 h-4 w-4 text-muted-foreground" />
+          <MapPin className="pointer-events-none absolute left-3.5 h-4 w-4 text-muted-foreground" />
           <select
             value={district}
             onChange={(e) => setDistrict(e.target.value)}
-            className="h-12 w-full appearance-none rounded-lg bg-background pl-10 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary border border-input text-foreground"
+            className="h-12 w-full appearance-none rounded-lg bg-background pl-10 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary border border-input text-foreground truncate cursor-pointer"
           >
-            <option value="">All Sri Lanka Districts</option>
+            <option value="">All Districts</option>
             {districts.map((d) => (
               <option key={d.code} value={d.code}>
-                {d.name} District
+                {d.name}
               </option>
             ))}
           </select>
+          <ChevronDown className="pointer-events-none absolute right-3 h-4 w-4 text-muted-foreground" />
         </div>
 
         {/* Sector dropdown */}
         <div className="relative md:col-span-3 flex items-center">
-          <Briefcase className="absolute left-3.5 h-4 w-4 text-muted-foreground" />
+          <Briefcase className="pointer-events-none absolute left-3.5 h-4 w-4 text-muted-foreground" />
           <select
             value={sector}
             onChange={(e) => setSector(e.target.value)}
-            className="h-12 w-full appearance-none rounded-lg bg-background pl-10 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary border border-input text-foreground"
+            className="h-12 w-full appearance-none rounded-lg bg-background pl-10 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary border border-input text-foreground truncate cursor-pointer"
           >
-            <option value="">All Industry Sectors</option>
+            <option value="">All Sectors</option>
             {sectors.map((s) => (
               <option key={s.slug} value={s.slug}>
                 {s.name}
               </option>
             ))}
           </select>
+          <ChevronDown className="pointer-events-none absolute right-3 h-4 w-4 text-muted-foreground" />
         </div>
 
         {/* Search Submit button */}
         <div className="md:col-span-1">
           <Button
             type="submit"
-            size="lg"
-            className="h-12 w-full font-semibold shadow hover:shadow-md"
+            className="h-12 w-full font-semibold shadow hover:shadow-md flex items-center justify-center gap-2 px-4 md:px-0"
+            aria-label="Search Jobs"
           >
-            Search
+            <Search className="h-5 w-5 shrink-0" />
+            <span className="md:hidden">Search</span>
           </Button>
         </div>
       </div>

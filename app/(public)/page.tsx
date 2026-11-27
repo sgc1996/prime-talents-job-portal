@@ -24,7 +24,7 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-primary/10 via-background to-background py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
-          <div className="mx-auto max-w-3xl space-y-4">
+          <div className="mx-auto max-w-4xl space-y-4">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
               <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               Verified Careers in Sri Lanka
