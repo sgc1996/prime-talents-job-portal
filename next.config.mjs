@@ -2,6 +2,13 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  redirects: async () => [
+    {
+      source: "/pricing",
+      destination: "/jobs",
+      permanent: false,
+    },
+  ],
   headers: async () => {
     return [
       {

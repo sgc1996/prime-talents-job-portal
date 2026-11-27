@@ -17,9 +17,9 @@ export function PublicFooter() {
   return (
     <footer className="border-t bg-muted/40 text-muted-foreground">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:grid-cols-4">
           {/* Brand info */}
-          <div className="space-y-3 lg:col-span-2">
+          <div className="space-y-3 md:col-span-2 lg:col-span-2">
             <Link href="/" className="flex items-center space-x-2.5 group">
               <Image
                 src="/images/logo.png"
@@ -61,26 +61,6 @@ export function PublicFooter() {
             </ul>
           </div>
 
-          {/* Employers & Hiring */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-              Employers &amp; Hiring
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/pricing" className="hover:text-foreground">Featured Vacancy Packages</Link>
-              </li>
-              <li>
-                <a href={`mailto:${siteConfig.supportEmail}?subject=Hire%20Talent%20Inquiry`} className="hover:text-foreground">
-                  Recruit With Prime Hire
-                </a>
-              </li>
-              <li>
-                <Link href="/login" className="hover:text-foreground">Staff &amp; Employer Sign In</Link>
-              </li>
-            </ul>
-          </div>
-
           {/* Platform & Support */}
           <div className="space-y-3">
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">
@@ -90,7 +70,7 @@ export function PublicFooter() {
               <li>
                 <a
                   href={`mailto:${siteConfig.supportEmail}`}
-                  className="text-xs hover:text-foreground"
+                  className="hover:text-foreground"
                 >
                   Support: {siteConfig.supportEmail}
                 </a>
