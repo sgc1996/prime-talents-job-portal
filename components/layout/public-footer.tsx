@@ -7,11 +7,12 @@ export function PublicFooter() {
     { name: "Western Province", districts: "Colombo, Gampaha, Kalutara" },
     { name: "Central Province", districts: "Kandy, Matale, Nuwara Eliya" },
     { name: "Southern Province", districts: "Galle, Matara, Hambantota" },
-    { name: "Northern Province", districts: "Jaffna, Kilinochchi, Mannar, Vavuniya" },
-    { name: "Eastern Province", districts: "Batticaloa, Ampara, Trincomalee" },
-    { name: "North Western", districts: "Kurunegala, Puttalam" },
-    { name: "North Central", districts: "Anuradhapura, Polonnaruwa" },
-    { name: "Uva & Sabaragamuwa", districts: "Badulla, Ratnapura, Kegalle" },
+    { name: "Northern Province", districts: "Jaffna, Kilinochchi, Mannar, Mullaitivu, Vavuniya" },
+    { name: "Eastern Province", districts: "Ampara, Batticaloa, Trincomalee" },
+    { name: "North Western Province", districts: "Kurunegala, Puttalam" },
+    { name: "North Central Province", districts: "Anuradhapura, Polonnaruwa" },
+    { name: "Uva Province", districts: "Badulla, Monaragala" },
+    { name: "Sabaragamuwa Province", districts: "Kegalle, Ratnapura" },
   ];
 
   return (
@@ -90,7 +91,7 @@ export function PublicFooter() {
           <h5 className="text-xs font-semibold uppercase tracking-wider text-foreground mb-4">
             Jobs Across All 9 Provinces &amp; 25 Districts of Sri Lanka:
           </h5>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
             {provinces.map((prov) => (
               <div key={prov.name}>
                 <span className="font-semibold text-foreground">{prov.name}:</span>
