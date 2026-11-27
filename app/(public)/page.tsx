@@ -4,14 +4,18 @@ import { JobRepository } from "@/server/repositories/job.repository";
 import { JobSearchBar } from "@/components/jobs/job-search-bar";
 import { JobCard } from "@/components/jobs/job-card";
 import { Button } from "@/components/ui/button";
-import { Briefcase, Building2, MapPin, CheckCircle, ArrowRight } from "lucide-react";
+import { Briefcase, Building2, MapPin, CheckCircle, ArrowRight, Mail } from "lucide-react";
+import { SystemSettingsRepository } from "@/server/repositories/system-settings.repository";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const districts = await JobRepository.getDistricts();
-  const sectors = await JobRepository.getSectorsWithCounts();
-  const featuredJobs = await JobRepository.getFeaturedJobs(6);
+  const [districts, sectors, featuredJobs, allowEmployerReg] = await Promise.all([
+    JobRepository.getDistricts(),
+    JobRepository.getSectorsWithCounts(),
+    JobRepository.getFeaturedJobs(6),
+    SystemSettingsRepository.isPublicEmployerRegistrationEnabled(),
+  ]);
 
   const topSectors = sectors.slice(0, 8);
 
@@ -201,30 +205,57 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Employer Banner */}
+      {/* Employer / Agency Partner Banner */}
       <section className="container mx-auto px-4">
         <div className="rounded-xl border bg-card p-8 text-center sm:p-12 shadow-sm">
-          <div className="mx-auto max-w-2xl space-y-4">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Are You Hiring in Sri Lanka?
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Reach thousands of qualified local job seekers with advanced filtering, built-in screening questions, and full applicant tracking.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-              <Link href="/register">
-                <Button size="lg" className="font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow">
-                  <Building2 className="mr-2 h-4 w-4" />
-                  Register as an Employer
-                </Button>
-              </Link>
-              <Link href="/employer">
-                <Button size="lg" variant="outline">
-                  Go to Employer Portal
-                </Button>
-              </Link>
+          {allowEmployerReg ? (
+            <div className="mx-auto max-w-2xl space-y-4">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                Are You Hiring in Sri Lanka?
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Reach thousands of qualified local job seekers with advanced filtering, built-in screening questions, and full applicant tracking.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+                <Link href="/register">
+                  <Button size="lg" className="font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow">
+                    <Building2 className="mr-2 h-4 w-4" />
+                    Register as an Employer
+                  </Button>
+                </Link>
+                <Link href="/employer">
+                  <Button size="lg" variant="outline">
+                    Go to Employer Portal
+                  </Button>
+                </Link>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mx-auto max-w-2xl space-y-4">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+                Corporate Recruitment Solutions
+              </span>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                Looking to Hire Top Talent in Sri Lanka?
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Partner with {siteConfig.name}. Our dedicated agency team sources, pre-screens, and delivers qualified professionals tailored to your organizational needs.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+                <a href={`mailto:${siteConfig.supportEmail}?subject=Recruitment%20Partnership%20Inquiry`}>
+                  <Button size="lg" className="font-semibold bg-primary text-primary-foreground shadow hover:bg-primary/90">
+                    <Mail className="mr-2 h-4 w-4" />
+                    Recruit With Us
+                  </Button>
+                </a>
+                <Link href="/pricing">
+                  <Button size="lg" variant="outline">
+                    View Recruitment Packages
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </div>
